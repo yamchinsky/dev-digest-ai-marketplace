@@ -6,5 +6,18 @@
     "name": "Pavlo Yamchinsky",
     "email": "pavloyamchinsky@gmail.com"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "engineering-paved-path",
+      "source": "./plugins/engineering-paved-path",
+      "category": "knowledge",
+      "tags": ["best-practices", "skills"]
+    },
+    {
+      "name": "research-tools",
+      "source": "./plugins/research-tools",
+      "category": "agents",
+      "tags": ["research", "read-only"]
+    }
+  ]
 }

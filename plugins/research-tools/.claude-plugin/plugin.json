@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "research-tools",
+  "version": "1.0.0",
+  "description": "Generic read-only research agent: looks things up in the current codebase (with path:line evidence) or on the web (with source URLs), reports in a strict structure, and asks clarifying questions when the request is ambiguous.",
+  "author": {
+    "name": "Pavlo Yamchinsky"
+  },
+  "keywords": [
+    "research",
+    "codebase-search",
+    "web-search",
+    "read-only",
+    "agent"
+  ]
+}
