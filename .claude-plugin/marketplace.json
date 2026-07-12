@@ -18,6 +18,12 @@
       "source": "./plugins/research-tools",
       "category": "agents",
       "tags": ["research", "read-only"]
+    },
+    {
+      "name": "architecture-review",
+      "source": "./plugins/architecture-review",
+      "category": "review",
+      "tags": ["architecture", "gate", "review"]
     }
   ]
 }

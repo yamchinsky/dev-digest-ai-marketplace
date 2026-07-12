@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "architecture-review",
+  "version": "1.0.0",
+  "description": "Architecture review gate: audits a diff against the repository's own documented structural contracts (docs/architecture/ or ARCHITECTURE.md) and returns findings with rule identifiers, verbatim evidence, and a PASS / FAIL / NOT-APPLICABLE verdict.",
+  "author": {
+    "name": "Pavlo Yamchinsky"
+  },
+  "keywords": [
+    "architecture",
+    "review",
+    "gate",
+    "layering",
+    "structural-contracts"
+  ],
+  "dependencies": [
+    { "name": "engineering-paved-path", "version": "^1.0.0" }
+  ]
+}
