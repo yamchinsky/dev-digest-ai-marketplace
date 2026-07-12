@@ -15,6 +15,28 @@ the DevDigest working tree.
 | `architecture-review` | `architecture-reviewer` — audits diffs against the repository's own documented architecture rules | `engineering-paved-path` |
 | `sdd-engineering` | The SDD workflow: `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` agents; `run-plan`, `workflow-retro`, `engineering-insights` skills | all three above |
 
+## What was extracted, and why
+
+The DevDigest harness files were classified into four groups. Only the first
+group ships here.
+
+| Group | Components | Disposition |
+|---|---|---|
+| **Reusable** | 12 knowledge skills (React/Next/Fastify/Drizzle/PostgreSQL/Zod/TypeScript/security/onion-architecture/Mermaid/testing); `researcher`; `architecture-reviewer` (generalized); `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; `run-plan` (formerly `impl`), `workflow-retro`, `engineering-insights` (generalized); their references and eval scenarios | Extracted into the four plugins after an editorial pass that removed every DevDigest-specific path, module name, and bare-name reference |
+| **Project-specific** | DevDigest `CLAUDE.md`, `pr-self-review` skill + hooks, `architecture-reviewer-lite`, `doc-writer`, `dependency-checker`, the vitest eval harness, the devdigest MCP server, product specs | Stay in the DevDigest repository — they encode its modules, contracts, and CI |
+| **Optional integrations** | Convention MCP tools used by `spec-creator` for grounding | Removed from required `tools:`; the agent falls back to CLAUDE.md/docs/code search when absent |
+| **Local leftovers** | Caches, personal memory, experiment workspaces, absolute paths | Not extracted |
+
+Why each reusable component updates together with the SDD workflow: the
+workflow *is* the consumer contract — `run-plan` dispatches
+`sdd-engineering:implementer` and the review gates, the planner assigns
+`engineering-paved-path:*` skills to tasks, and the spec/plan formats are the
+interfaces between the agents. Components with an independent consumer
+scenario (`researcher`, `architecture-reviewer`, the knowledge skills) live in
+their own plugins and are consumed as version-constrained dependencies;
+`workflow-retro` has no consumer scenario outside the SDD lifecycle, so it
+stays inside `sdd-engineering` and is invoked manually only.
+
 ## Install
 
 ```bash
