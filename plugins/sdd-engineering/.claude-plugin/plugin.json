@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sdd-engineering",
+  "version": "1.0.0",
+  "description": "The complete Spec-Driven Development workflow: spec-creator, implementation-planner, implementer, and plan-verifier agents plus the run-plan orchestrator, manual workflow-retro, and engineering-insights capture — wired to shared knowledge skills, a research agent, and an architecture-review gate via plugin dependencies.",
+  "author": {
+    "name": "Pavlo Yamchinsky"
+  },
+  "keywords": [
+    "sdd",
+    "spec-driven-development",
+    "workflow",
+    "planning",
+    "orchestration",
+    "agents"
+  ],
+  "dependencies": [
+    { "name": "engineering-paved-path", "version": "^1.0.0" },
+    { "name": "research-tools", "version": "^1.0.0" },
+    { "name": "architecture-review", "version": "^1.0.0" }
+  ]
+}

@@ -24,6 +24,12 @@
       "source": "./plugins/architecture-review",
       "category": "review",
       "tags": ["architecture", "gate", "review"]
+    },
+    {
+      "name": "sdd-engineering",
+      "source": "./plugins/sdd-engineering",
+      "category": "workflow",
+      "tags": ["sdd", "workflow", "planning", "agents"]
     }
   ]
 }
