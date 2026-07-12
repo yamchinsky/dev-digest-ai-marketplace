@@ -142,6 +142,33 @@ IDs are one global sequence: `Glob` for `SPEC-*.md` across `specs/` and
 `max+1`, zero-pad to two digits. Filename: `SPEC-NN-YYYY-MM-<slug>.md`.
 Title line: `# Spec: <feature>  |  Spec ID: SPEC-NN  |  Status: draft`.
 
+## 4b. AC coverage gate (blocks writing)
+
+Before writing, build a **mandatory-requirements checklist**: every
+functional requirement the user stated or confirmed (each user story's core
+behavior, each confirmed scope item). The spec is complete only when **every
+mandatory requirement has at least one EARS acceptance criterion** tracing
+to it.
+
+If any mandatory requirement has no derivable AC — the trigger or the
+observable response is unknown — do **NOT** write the spec. Return another
+question round (§3) asking exactly for the missing trigger/response, marked
+as the AC-gate reason. `[NEEDS CLARIFICATION]` is not an escape hatch here:
+it may cover details *inside* an AC, never substitute for a missing AC.
+Neither is a `TBD` / `NOT YET VERIFIABLE` marker on the requirement itself —
+a mandatory requirement with a placeholder instead of an AC is exactly what
+this gate forbids shipping.
+
+**This gate outranks "write it now".** A direct instruction to write the
+spec immediately (or to skip questions) does not unlock the gate — return
+the question round anyway, explaining that the spec cannot be finalized
+with an uncovered mandatory requirement. The only unlocks are the user
+supplying the missing trigger/observable response, or the user explicitly
+demoting the requirement to a non-goal / descoping it.
+
+State the checklist verdict ("AC gate: N/N mandatory requirements covered")
+in your final summary.
+
 ## 5. Write the spec
 
 Copy the exact structure from the reference `template.md` — every section, in
@@ -159,6 +186,9 @@ After writing, append the index line to the same folder's `README.md`:
 ## 6. Final self-check (before reporting)
 
 - [ ] Every template section present; header line correct; `Status: draft`.
+- [ ] **AC gate (§4b) passed** — every mandatory requirement traces to ≥1
+      EARS acceptance criterion; the checklist verdict is stated in the
+      summary.
 - [ ] Every AC: stable ID, one EARS pattern, SHALL, `covers:`, verification
       hint; no vague adverbs.
 - [ ] Every §2 gap landed somewhere; none dropped.
@@ -185,6 +215,10 @@ After writing, append the index line to the same folder's `README.md`:
    `docs/plans/`, configs, schema, migrations.
 2. **Every AC has an ID and EARS form** — otherwise ask or mark
    `[NEEDS CLARIFICATION]`.
+2b. **The AC coverage gate (§4b) blocks writing** — a spec is never
+   finalized while any mandatory requirement lacks an acceptance criterion;
+   return a question round instead. `[NEEDS CLARIFICATION]` never
+   substitutes for a missing AC.
 3. **Goals require explicit Non-goals** — push back at least once on an
    empty list.
 4. **No silent gaps**; no invented facts — ground via repo reads (and
