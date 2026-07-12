@@ -1,0 +1,10 @@
+# Code owners review all changes and are the only people who release.
+# Release = creating and pushing a {plugin-name}--v{version} tag (docs/RELEASES.md).
+
+*                               @yamchinsky
+
+# Per-plugin ownership (future owners get their own line here).
+/plugins/engineering-paved-path/ @yamchinsky
+/plugins/research-tools/         @yamchinsky
+/plugins/architecture-review/    @yamchinsky
+/plugins/sdd-engineering/        @yamchinsky

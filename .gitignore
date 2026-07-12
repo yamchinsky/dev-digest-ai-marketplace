@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# Generated site data — rebuilt by scripts/build-index.mjs, never committed
+site/public/index.json
+site/public/releases.json
+site/public/stats.json
+site/public/bodies/
+
+# Site build output
+site/dist/
+
+# OS noise
+.DS_Store
