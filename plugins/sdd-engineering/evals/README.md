@@ -41,3 +41,4 @@ after installation.
 | EVAL-05 | plan-verifier maps ACs to concrete evidence, returns the coverage matrix |
 | EVAL-06 | workflow-retro never auto-fires; runs only on explicit request; analyze_journals.py resolves via ${CLAUDE_SKILL_DIR} |
 | EVAL-07 | namespaced skill preloads resolve with zero missing-skill warnings; SDD workflow does NOT activate on an irrelevant request |
+| EVAL-08 | (1.1.0) spec-creator refuses to finalize a spec while a mandatory requirement lacks an acceptance criterion |

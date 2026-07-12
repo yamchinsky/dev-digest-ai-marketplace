@@ -3,6 +3,23 @@
 All notable changes to `sdd-engineering` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [1.1.0] - 2026-07-12
+
+### Added
+
+- **spec-creator AC coverage gate** (§4b): the agent now refuses to
+  finalize a spec while any mandatory requirement lacks at least one EARS
+  acceptance criterion — it returns another question round asking for the
+  missing trigger/observable response instead. `[NEEDS CLARIFICATION]` no
+  longer substitutes for a missing AC. The final summary states the gate
+  verdict ("N/N mandatory requirements covered").
+- `evals/cases/EVAL-08-spec-creator-ac-coverage-gate.md` — behavior check
+  for the new gate.
+
+Backward compatible: specs that previously passed still pass; the gate only
+blocks specs that would have shipped uncovered mandatory requirements.
+Dependencies unchanged (`^1.0.0`).
+
 ## [1.0.0] - 2026-07-12
 
 ### Added
