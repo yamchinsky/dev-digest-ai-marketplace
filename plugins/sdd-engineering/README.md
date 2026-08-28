@@ -19,9 +19,12 @@ claude plugin marketplace add yamchinsky/dev-digest-ai-marketplace
 claude plugin install sdd-engineering@dev-digest-ai-marketplace --scope project
 ```
 
-The three dependencies install automatically (the install output lists them):
-`engineering-paved-path` (shared knowledge skills), `research-tools`
-(delegated discovery), `architecture-review` (the structural review gate).
+The two dependencies install automatically (the install output lists
+them): `research-tools` (delegated discovery) and `architecture-review`
+(the structural review gate). The shared knowledge skills come from the
+recommended companion `engineering-paved-path` — or from the host
+project's own vendored copies; agents resolve either form (see
+Dependencies).
 
 ## Components
 
@@ -31,7 +34,7 @@ The three dependencies install automatically (the install output lists them):
 |---|---|
 | `sdd-engineering:spec-creator` | Writes SPEC-NN files with EARS acceptance criteria; interviews via stop-and-return question rounds; grounds facts in the repo (optional convention MCP tools → docs → code search) |
 | `sdd-engineering:implementation-planner` | Turns confirmed requirements into `docs/plans/<feature>.md` with R-IDs, disjoint owned paths, namespaced per-task skills, and a dependency DAG |
-| `sdd-engineering:implementer` | Executes ONE plan task in the shared tree; preloads `engineering-paved-path:typescript-expert` + `engineering-paved-path:security`; runs the package's verify command or reports "no test command found; typecheck-only" |
+| `sdd-engineering:implementer` | Executes ONE plan task in the shared tree; always loads `typescript-expert` + `security` (namespaced or host-local); runs the package's verify command or reports "no test command found; typecheck-only" |
 | `sdd-engineering:plan-verifier` | Read-only coverage gate: maps every requirement/AC to `path:line` evidence, returns ALL COVERED / GAPS FOUND |
 
 ### Skills
@@ -66,12 +69,21 @@ The three dependencies install automatically (the install output lists them):
 
 ## Dependencies
 
-- `engineering-paved-path@^1.0.0` — single source of the 12 knowledge skills
-  the planner assigns and the implementer loads.
 - `research-tools@^1.0.0` — `research-tools:researcher` for delegated
   discovery during planning.
 - `architecture-review@^1.0.0` — the structural review gate; repositories
   document their own rules (see that plugin's `references/rule-format.md`).
+
+## Recommended companion (not a dependency)
+
+- `engineering-paved-path` — canonical source of the knowledge skills the
+  planner assigns and the implementer loads. Not declared in
+  `dependencies` since 2.0.0: Claude Code disables a plugin transitively
+  when any declared dependency is disabled, and hosts that vendor these
+  skills locally disable the plugin deliberately (to keep wrong-stack and
+  duplicate-named entries out of skill selection) — a hard dependency
+  silently took the whole SDD workflow down with them. Agents resolve each
+  knowledge skill namespaced (plugin enabled) or by bare host-local name.
 
 ## Evals
 

@@ -24,3 +24,12 @@ Other requirements:
 - `python3` on PATH — for `workflow-retro`'s bundled
   `analyze_journals.py` (stdlib only, offline).
 - `gh` CLI authenticated — for the final `gh pr create` step of `run-plan`.
+
+## 2.0.0 dependency change
+
+`engineering-paved-path` is no longer declared in `dependencies` (it is a
+recommended companion): Claude Code ≥ 2.1.143 disables a plugin
+transitively when any declared dependency is disabled, and hosts that
+vendor the knowledge skills locally disable that plugin deliberately.
+Knowledge-skill names in agent prompts resolve namespaced when the plugin
+is enabled, or as host-local bare names otherwise.

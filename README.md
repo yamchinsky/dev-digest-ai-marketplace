@@ -12,8 +12,8 @@ the DevDigest working tree.
 |---|---|---|
 | `engineering-paved-path` | 12 shared knowledge skills (React, Next.js, Fastify, Drizzle, PostgreSQL, Zod, TypeScript, security, onion architecture, Mermaid, testing) | — |
 | `research-tools` | `researcher` — generic read-only research agent (codebase + web) | — |
-| `architecture-review` | `architecture-reviewer` — audits diffs against the repository's own documented architecture rules | `engineering-paved-path` |
-| `sdd-engineering` | The SDD workflow: `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` agents; `run-plan`, `workflow-retro`, `engineering-insights` skills | all three above |
+| `architecture-review` | `architecture-reviewer` — audits diffs against the repository's own documented architecture rules | — |
+| `sdd-engineering` | The SDD workflow: `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` agents; `run-plan`, `workflow-retro`, `engineering-insights` skills | `research-tools`, `architecture-review` |
 
 ## What was extracted, and why
 
@@ -30,10 +30,10 @@ group ships here.
 Why each reusable component updates together with the SDD workflow: the
 workflow *is* the consumer contract — `run-plan` dispatches
 `sdd-engineering:implementer` and the review gates, the planner assigns
-`engineering-paved-path:*` skills to tasks, and the spec/plan formats are the
+knowledge skills to tasks, and the spec/plan formats are the
 interfaces between the agents. Components with an independent consumer
 scenario (`researcher`, `architecture-reviewer`, the knowledge skills) live in
-their own plugins and are consumed as version-constrained dependencies;
+their own plugins and are consumed as version-constrained dependencies (the knowledge skills as a recommended companion since sdd-engineering 2.0.0, resolved namespaced or host-local);
 `workflow-retro` has no consumer scenario outside the SDD lifecycle, so it
 stays inside `sdd-engineering` and is invoked manually only.
 

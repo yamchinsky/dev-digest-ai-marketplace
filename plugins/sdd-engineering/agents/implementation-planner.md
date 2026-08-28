@@ -115,35 +115,37 @@ evidence:
    agent (broad fan-out) via the `Agent` tool rather than reading dozens of
    files yourself. Synthesize their results.
 5. Skills are **not preloaded** — planning needs codebase evidence, not
-   implementation guidance. Assign per-task skills **by namespaced name**
-   from the catalog below. Invoke a skill body via the Skill tool only when
-   its content changes the plan itself:
-   `engineering-paved-path:postgresql-table-design` when the plan designs
-   new tables/indexes; `engineering-paved-path:onion-architecture` /
-   `engineering-paved-path:frontend-architecture` only when placement is
-   genuinely not covered by the repo docs you already read.
+   implementation guidance. Assign per-task skills from the catalog below
+   (see its resolution note for the namespaced vs host-local form). Invoke
+   a skill body via the Skill tool only when its content changes the plan
+   itself: `postgresql-table-design` when the plan designs new
+   tables/indexes; `onion-architecture` / `frontend-architecture` only when
+   placement is genuinely not covered by the repo docs you already read.
 6. Map every touch point and turn each confirmed requirement into one or
    more tasks (multi-agent) or steps (single-agent).
 
 ## Skill catalog — file kind → `Skills (mandatory)`
 
-Assign from this catalog (the implementer preloads
-`engineering-paved-path:typescript-expert` and
-`engineering-paved-path:security` — list them only when they carry the core
-of the task):
+Catalog names are canonical bare names. In `Skills (mandatory)` lines,
+write the form that resolves in the host session:
+`engineering-paved-path:<name>` when that plugin is enabled, or the bare
+`<name>` when the host project ships/vendors the skill itself — verify
+resolvability once per plan. The implementer always loads
+`typescript-expert` and `security`; list them only when they carry the
+core of the task. Assign from this catalog:
 
 | Files a task owns | Assign |
 |---|---|
-| HTTP routes / Fastify plugins / server config | `engineering-paved-path:fastify-best-practices` |
-| Backend services / repositories / adapters / module placement | `engineering-paved-path:onion-architecture` |
-| Drizzle queries, schema files | `engineering-paved-path:drizzle-orm-patterns` |
-| New tables / indexes / constraints | `engineering-paved-path:postgresql-table-design` |
-| Zod schemas (DTOs, contracts, decoders) | `engineering-paved-path:zod` |
-| React components / hooks / state | `engineering-paved-path:react-best-practices` |
-| Component / hook tests | `engineering-paved-path:react-testing-library` |
-| Next.js routing / RSC / data patterns | `engineering-paved-path:next-best-practices` |
-| Frontend file placement / feature folders | `engineering-paved-path:frontend-architecture` |
-| Docs with diagrams | `engineering-paved-path:mermaid-diagram` |
+| HTTP routes / Fastify plugins / server config | `fastify-best-practices` |
+| Backend services / repositories / adapters / module placement | `onion-architecture` |
+| Drizzle queries, schema files | `drizzle-orm-patterns` |
+| New tables / indexes / constraints | `postgresql-table-design` |
+| Zod schemas (DTOs, contracts, decoders) | `zod` |
+| React components / hooks / state | `react-best-practices` |
+| Component / hook tests | `react-testing-library` |
+| Next.js routing / RSC / data patterns | `next-best-practices` |
+| Frontend file placement / feature folders | `frontend-architecture` |
+| Docs with diagrams | `mermaid-diagram` |
 
 If the host project ships its own skills for an area, prefer them and note
 why.

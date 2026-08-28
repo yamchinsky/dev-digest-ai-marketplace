@@ -3,6 +3,18 @@
 All notable changes to `architecture-review` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [2.0.0] - 2026-08-28
+
+### Changed
+
+- **BREAKING:** `engineering-paved-path` removed from `dependencies`; it is
+  now a recommended companion. A disabled declared dependency transitively
+  disables this plugin, which silently removed the review gate in hosts
+  that vendor the knowledge skills locally.
+- The reviewer resolves `onion-architecture` namespaced (plugin enabled) or
+  as the host project's own vendored copy, and interprets rules from the
+  repository's wording alone when neither resolves.
+
 ## [1.0.0] - 2026-07-12
 
 ### Added

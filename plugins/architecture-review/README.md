@@ -38,11 +38,15 @@ A diff (inline, file path, or "diff vs <ref>") and, optionally, an explicit
 rules location. Without an identifiable diff, the agent asks instead of
 auditing the whole tree.
 
-## Dependencies
+## Recommended companion (not a dependency)
 
-- `engineering-paved-path@^1.0.0` — the reviewer may load
-  `engineering-paved-path:onion-architecture` to interpret layering/DI rules;
-  the repository's own wording always wins over the skill's defaults.
+- `engineering-paved-path` — the reviewer may load its
+  `onion-architecture` skill (or the host project's own vendored copy) to
+  interpret layering/DI rules; the repository's own wording always wins
+  over the skill's defaults. Not declared in `dependencies` since 2.0.0:
+  a disabled declared dependency transitively disables this plugin, which
+  silently removed the review gate in hosts that vendor the knowledge
+  skills locally.
 
 ## Provenance
 

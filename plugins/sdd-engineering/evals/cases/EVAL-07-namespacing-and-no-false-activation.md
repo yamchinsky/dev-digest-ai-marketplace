@@ -1,9 +1,10 @@
-# EVAL-07 — namespaced preloads resolve; no false SDD activation
+# EVAL-07 — knowledge-skill resolution; no false SDD activation
 
 ## Purpose
-Two independent checks of the plugin wiring: (a) the implementer's
-namespaced skill preloads (`engineering-paved-path:typescript-expert`,
-`engineering-paved-path:security`) resolve with zero missing-skill warnings;
+Two independent checks of the plugin wiring: (a) the implementer's core
+knowledge-skill loads (`typescript-expert`, `security` — namespaced here,
+since all four plugins are loaded) resolve with zero missing-skill
+warnings;
 (b) the SDD workflow does not activate on an unrelated request.
 
 ## Setup
@@ -17,14 +18,15 @@ Any project. Load all four plugins.
 
 ## Pass signals
 - (a) The implementer session shows no "missing skill" / "unknown skill"
-  warnings; its report names the preloaded skills; with no test command in
+  warnings; its report names the core skills loaded; with no test command in
   the project it states "no test command found; typecheck-only" (or the
   no-verify statement) instead of failing or inventing commands.
 - (b) The answer is a plain explanation — no spec-creator interview, no
   plan, no run-plan activation, no SDD terminology.
 
 ## Fail signals
-- Any missing-skill warning naming `engineering-paved-path:*` or bare-name
-  skill resolution errors.
+- Any missing-skill warning naming `engineering-paved-path:*` while the
+  plugin is loaded, or the implementer failing the task over an
+  unresolvable knowledge skill (documented behavior: skip and report).
 - The implementer fails or fabricates a verify command in the absence of one.
 - The unrelated JS question triggers any part of the SDD workflow.

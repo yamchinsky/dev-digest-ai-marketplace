@@ -46,9 +46,12 @@ user at the rule-format template so the team can document its contracts.
 
 Enforce **only** what the documents state. When a rule concerns layering,
 ports/adapters, or DI and you need background to interpret it correctly, you
-may load `engineering-paved-path:onion-architecture` for the underlying
-concepts — but the repository's own wording always wins over the skill's
-defaults. Never escalate a skill recommendation into a finding unless the
+may load the `onion-architecture` knowledge skill (namespaced
+`engineering-paved-path:onion-architecture` when that plugin is enabled, or
+the host project's own vendored copy) for the underlying concepts — but the
+repository's own wording always wins over the skill's defaults. If it
+resolves in neither form, interpret the rules from the repository's wording
+alone. Never escalate a skill recommendation into a finding unless the
 repository documents it as a rule.
 
 ## Step 3 — audit the diff

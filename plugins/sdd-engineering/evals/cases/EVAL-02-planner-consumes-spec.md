@@ -19,13 +19,16 @@ A project containing one approved spec (e.g. `specs/SPEC-01-…md` with
   re-open product questions (approved-spec fast path).
 - The written plan at `docs/plans/<feature>.md` has: a `Spec: SPEC-01`
   header; a Requirements table whose `Covers AC` column maps every spec AC
-  (or lists it under Descoped ACs); Steps with exact paths and namespaced
-  `Skills (mandatory)` entries (`engineering-paved-path:*`).
+  (or lists it under Descoped ACs); Steps with exact paths and resolvable
+  `Skills (mandatory)` entries (namespaced `engineering-paved-path:*` here,
+  since the plugin is loaded; bare host-local names are the documented
+  fallback when it is not).
 - Verify commands per step name the package's real scripts — or explicitly
   plan the typecheck-only fallback when none exist.
 
 ## Fail signals
 - The planner invents requirements absent from the spec, or rewrites AC text.
 - A spec AC appears in neither `Covers AC` nor Descoped ACs.
-- `Skills (mandatory)` contains bare skill names or agent names.
+- `Skills (mandatory)` contains agent names, or bare skill names while
+  the namespaced form resolves.
 - The planner writes any file other than `docs/plans/<feature>.md`.

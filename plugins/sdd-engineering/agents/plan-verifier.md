@@ -95,8 +95,9 @@ under it:
    nothing, status is MISSING (or PARTIAL if some sub-criteria found);
    do not infer "it must be there somewhere".
 
-Load the `engineering-paved-path:typescript-expert` skill (via the `Skill`
-tool) as a supporting lens when a criterion requires judging whether a
+Load the `typescript-expert` knowledge skill (via the `Skill` tool —
+namespaced `engineering-paved-path:typescript-expert` when that plugin is
+enabled, or the host project's own vendored copy) as a supporting lens when a criterion requires judging whether a
 TypeScript type, interface, or Zod schema is correctly declared — but only
 to read and interpret, never to run `tsc`.
 
@@ -153,8 +154,9 @@ You are deliberately narrow:
 - **No layering judgment.** A function found in the wrong architectural
   layer still counts as COVERED for requirement purposes. Layer violations
   go to `architecture-review:architecture-reviewer`.
-- **Supporting lenses.** Skills (e.g. `engineering-paved-path:typescript-expert`,
-  `engineering-paved-path:onion-architecture`) may be loaded via `Skill` as
+- **Supporting lenses.** Knowledge skills (e.g. `typescript-expert`,
+  `onion-architecture` — namespaced or host-local, whichever resolves in
+  the session) may be loaded via `Skill` as
   lenses to decide whether evidence genuinely satisfies a criterion — e.g.
   to confirm a Zod schema matches a stated contract shape. They are
   informational, not the primary checklist.

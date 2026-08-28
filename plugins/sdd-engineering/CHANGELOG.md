@@ -3,6 +3,26 @@
 All notable changes to `sdd-engineering` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [2.0.0] - 2026-08-28
+
+### Changed
+
+- **BREAKING:** `engineering-paved-path` removed from `dependencies`; it is
+  now a recommended companion. Claude Code disables a plugin transitively
+  when any declared dependency is disabled, so hosts that vendor the
+  knowledge skills locally (and disable that plugin to keep wrong-stack and
+  duplicate-named entries out of skill selection) silently lost the entire
+  SDD workflow — commands gone from the `/` menu, agents unavailable.
+- Knowledge-skill references in agent prompts now use canonical bare names
+  with one resolution rule: `engineering-paved-path:<name>` when that
+  plugin is enabled, the host project's own `<name>` otherwise;
+  unresolvable knowledge skills are skipped and reported, never fatal.
+- **BREAKING:** the implementer no longer preloads
+  `engineering-paved-path:typescript-expert` / `:security` via agent
+  frontmatter — it loads the core (`typescript-expert`, `security`)
+  through the Skill tool under the same resolution rule.
+- EVAL-02 and EVAL-07 updated for the two resolution modes.
+
 ## [1.1.0] - 2026-07-12
 
 ### Added
