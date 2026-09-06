@@ -116,4 +116,6 @@ Two failure modes worth knowing:
 
 `class-validator` is the default because the DTO class doubles as the transformation target. Zod (or another Standard Schema library) is a legitimate alternative for request bodies, especially where the schema is shared with a client package — implement a small pipe that runs `safeParse` and throws a `BadRequestException` with the flattened issues. For Zod mechanics see `engineering-paved-path:zod`.
 
-Note the version reality: `class-validator`'s last release is 0.15.1 (2026-02), and `class-transformer` has had **no tagged release since 0.5.1 in 2021**. They work, and Nest's docs still build on them, but do not expect fixes. That is a real argument for schema-library validation on new code.
+Note the version reality: `class-validator`'s last release is 0.15.1 (2026-02), and `class-transformer` has had **no tagged release since 0.5.1 in 2021**. They work, and Nest's docs still build on them, but do not expect fixes.
+
+**Whichever the project already uses is the one to write.** Introducing a second validation library into a codebase is a dependency decision with its own review — not something to do because a skill mentioned it. The paragraph above is context for that decision if someone chooses to have it, not a recommendation to switch.

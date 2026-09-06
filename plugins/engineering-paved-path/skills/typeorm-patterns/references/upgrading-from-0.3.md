@@ -1,5 +1,12 @@
 # Upgrading from 0.3.x to 1.x
 
+> **This page describes an upgrade; it does not ask for one.** 0.3.x is still
+> maintained and still widely deployed, and a major ORM bump is its own
+> project with its own review — never a step taken on the way to something
+> else. If the project is on 0.3.x and staying there, read the list below as
+> a **description of what your code does today**: every "changed in 1.0" is a
+> statement about the behaviour you currently have.
+
 TypeORM 1.0.0 shipped **2026-05-19**; the line is at **1.1.1** (2026-09-01). It was the first breaking release in about five years, so a codebase on 0.3.x has a real migration ahead — and so does anyone's memory of the API.
 
 Official material: [Upgrading from 0.3 to 1.0](https://typeorm.io/docs/releases/1.0/upgrading-from-0.3/) and the [1.0 release notes](https://typeorm.io/docs/releases/1.0/release-notes/). There is a codemod:

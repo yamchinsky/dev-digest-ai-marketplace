@@ -3,7 +3,29 @@
 All notable changes to `engineering-paved-path` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
-## [Unreleased]
+## [2.1.0] - 2026-09-06
+
+### Changed
+
+- **Guidance no longer asks a project to change its dependencies.** A plugin
+  is a guest: it works with the stack, versions and tooling the host already
+  has. Several passages read as steps rather than observations — "pin the
+  build toolchain to TypeScript 6.x", an upgrade order presented as a
+  procedure, a nudge toward a different validation library, a strictness flag
+  offered as "recommended". All are reframed as findings and options for the
+  project's owners to decide on, explicitly not as work to fold into an
+  unrelated change. `references/upgrading-from-0.3.md` now opens by saying it
+  describes an upgrade rather than asking for one, and that a project staying
+  on 0.3.x should read it as a description of its current behaviour.
+- `docs/PLUGIN-GUIDELINES.md` gains **"Respect the host's infrastructure and
+  dependencies"** as a stated rule, plus two editorial-checklist items: no
+  install command presented as a precondition for guidance, and
+  version-dependent claims marked in both directions. The discipline already
+  existed in the agents — `implementer` forbids lockfiles and root
+  `package.json`, `researcher` forbids installs entirely — but it was an
+  accident of their authorship rather than a contract every component owed.
+
+## [2.0.1] - 2026-09-06
 
 ### Fixed
 

@@ -17,7 +17,7 @@ Everything on this page was verified on **2026-09-06**. Version facts rot; re-ch
 | `@nestjs/config` | 12.0.0 | Standard Schema validation |
 | `@nestjs/typeorm` | 12.0.x | see `engineering-paved-path:typeorm-patterns` for the TypeORM pairing |
 | `@nestjs/platform-express` | 12.0.x | pins **Express 5** |
-| `@nestjs/cache-manager` | 12.0.0 | caching is **not** in core; install it plus `cache-manager` |
+| `@nestjs/cache-manager` | 12.0.0 | caching lives here, **not** in core — it and `cache-manager` are separate packages a project either has or does not |
 | `@nestjs/throttler` | 6.5.0 (2025-12) | peer range still tops out at `@nestjs/core@^11` |
 | `class-validator` | 0.15.1 (2026-02) | maintained, slowly |
 | `class-transformer` | 0.5.1 (**2021**) | no tagged release in ~5 years |
@@ -56,11 +56,11 @@ This is the single most common upgrade break for applications with catch-all rou
 
 TypeScript 7.0 (2026-07-08) is the native Go rewrite. It **does not expose the programmatic Compiler API**, and `nest build` / `nest start` depend on it — so with `typescript@7` installed, compiler-dependent CLI commands fail for both the `tsc` and the SWC builders. The tracking issue [nest-cli#3479](https://github.com/nestjs/nest-cli/issues/3479) is **open**; what shipped so far is a clearer error telling you to install TypeScript 6.
 
-Until it closes:
+Until it closes, the options — **for the project's owners to choose between, not to be applied in passing**:
 
-- Pin the build toolchain to TypeScript 6.x. NestJS's own `typescript-starter` pins `^6.x`.
-- If you want TS 7's speed, run it as a separate `typecheck` script rather than as the compiler the CLI invokes.
-- **Re-check the issue before writing this into a project.** It is the fact on this page most likely to have moved.
+- Stay on TypeScript 6.x for the build toolchain. NestJS's own `typescript-starter` pins `^6.x`.
+- Keep 7 and run it as a separate `typecheck` script rather than as the compiler the CLI invokes.
+- **Re-check the issue before relying on any of this.** It is the fact on this page most likely to have moved.
 
 ## Decorators stay legacy
 
@@ -75,6 +75,11 @@ A NestJS major moving does not move its satellites. Before committing to an upgr
 3. Watch for packages whose *last release* predates the change you rely on. `class-transformer` is frozen at a 2021 release; it works, but nothing will be fixed in it. That is a real argument for schema-library validation on new code ([validation.md](validation.md)).
 
 ## Upgrade order that avoids thrash
+
+This page describes an upgrade; it does not ask for one. Nothing here is a
+reason to change a project's dependencies while doing unrelated work — a
+version bump is its own change, with its own review. When an upgrade *has*
+been decided:
 
 1. Node runtime to a supported line.
 2. TypeScript to the version the CLI supports (today: 6.x).
