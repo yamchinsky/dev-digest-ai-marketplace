@@ -24,9 +24,17 @@ export class AppModule {}
 
 `isGlobal: true` removes the need to re-import `ConfigModule` in every feature module. This is one of the narrow, legitimate uses of a global module ([modules.md](modules.md)).
 
-## Validation is Standard Schema now (v12)
+## Validation — the shape depends on your major
 
-In NestJS 12, `@nestjs/config` validates through **Standard Schema**, so Zod, Valibot, ArkType and friends work directly:
+**On `@nestjs/config` 12+**, validation goes through **Standard Schema**, so Zod, Valibot, ArkType and friends work directly.
+
+**On 11 and earlier**, `validationSchema` is Joi-shaped: pass a Joi schema, any Joi version, with `validationOptions` flat (no `libraryOptions` nesting). Zod does not work there without a custom `validate` function — which is available in every major and is the version-independent option:
+
+```ts
+ConfigModule.forRoot({ validate: (raw) => appConfigSchema.parse(raw) })
+```
+
+Reach for `validate` when the project must work across majors, or when you want the schema library to be your choice rather than the framework's. The rest of this section describes the 12+ path:
 
 ```ts
 const appConfigSchema = z.object({

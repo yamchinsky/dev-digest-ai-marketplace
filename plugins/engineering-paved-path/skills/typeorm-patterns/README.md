@@ -64,6 +64,11 @@ say*, and `nestjs-best-practices` answers *how it reaches a service*.
 - Add any new sources below, URL verbatim.
 - **Re-verify the version baseline on every edit.** The 1.x line is young and
   moving; `SKILL.md` carries a dated table.
+- **Keep 0.3.x reachable.** It is still maintained and still widely deployed,
+  and the two lines differ in ways that change query *results* rather than
+  raising errors. Every 1.x-only claim states the 0.3.x behaviour beside it;
+  where one form works on both lines, recommend that form. A reader on 0.3.x
+  should be able to use this skill without first upgrading.
 - **Keep the "undocumented" labels honest.** Two claims in this skill —
   `query()` result shapes and the query-builder soft-delete root behaviour —
   have no upstream documentation to cite. If TypeORM documents them, cite the

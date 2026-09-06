@@ -14,7 +14,9 @@ This skill assumes nothing about your repository beyond what you tell it. When a
 
 ## Version baseline (verified 2026-09-06)
 
-**TypeORM 1.x is the current line, and it is recent.** If your working knowledge says "TypeORM is 0.3.x", it is out of date.
+**Read the installed version out of the lockfile before applying anything on this page.** TypeORM 1.x is the current line and is recent, so "TypeORM is 0.3.x" as a working assumption is out of date — but **0.3.x is still maintained and still widely deployed**, and the two lines differ in ways that change query results rather than raising errors. Treat every 1.x-specific claim below as inapplicable until you have confirmed the major.
+
+If the project is on **0.3.x**, read [references/upgrading-from-0.3.md](references/upgrading-from-0.3.md) as a *difference list*, not an upgrade plan: everything it says changed in 1.0 is a statement about what your code does **today**. In particular, on 0.3.x `null`/`undefined` in a `where` are silently ignored rather than throwing, non-nullable relations `LEFT JOIN` rather than `INNER JOIN`, the global helpers (`getRepository`, `getManager`, `createConnection`) still exist, and string-array `select`/`relations` still work.
 
 | Fact | Value |
 |---|---|
@@ -25,19 +27,21 @@ This skill assumes nothing about your repository beyond what you tell it. When a
 | With NestJS | `@nestjs/typeorm` **≥ 11.0.1** is required for TypeORM 1.x; v10 and v11.0.0 crash at startup because they still register the removed `Connection` class. Current is 12.0.x |
 | Upgrade aid | `npx @typeorm/codemod v1 src/` |
 
-1.0 was the first breaking release in about five years. [references/upgrading-from-0.3.md](references/upgrading-from-0.3.md) has the full list; the four changes most likely to alter behaviour silently:
+1.0 was the first breaking release in about five years. [references/upgrading-from-0.3.md](references/upgrading-from-0.3.md) has the full list; the four changes most likely to alter behaviour silently — **all four are 1.x-only, and on 0.3.x the pre-change behaviour in each is what you have**:
 
-- **`invalidWhereValuesBehavior` now defaults to `"throw"`.** `null`/`undefined` in a `where` used to be silently ignored; now it throws. Use `IsNull()`, or opt back in explicitly.
-- **Non-nullable relations generate `INNER JOIN`, not `LEFT JOIN`.** Rows are now silently *excluded* where they used to come back with a null relation.
-- **`orphanedRowAction: "nullify"` against a non-nullable FK now deletes the orphan** instead of throwing a constraint violation.
-- **The global helpers are gone** — `getRepository()`, `getManager()`, `createConnection()`, `getConnection()` and the rest. Hold a `DataSource` and pass it.
+- **`invalidWhereValuesBehavior` defaults to `"throw"` in 1.x.** `null`/`undefined` in a `where` were silently ignored on 0.3.x; on 1.x they throw. Use `IsNull()`, or opt back in explicitly.
+- **Non-nullable relations generate `INNER JOIN` in 1.x, `LEFT JOIN` on 0.3.x.** Rows are silently *excluded* on 1.x where 0.3.x returned them with a null relation.
+- **`orphanedRowAction: "nullify"` against a non-nullable FK deletes the orphan in 1.x**; on 0.3.x it throws a constraint violation.
+- **The global helpers are gone in 1.x** — `getRepository()`, `getManager()`, `createConnection()`, `getConnection()` and the rest. On 0.3.x they still exist; hold a `DataSource` and pass it anyway, because that is the shape that survives the upgrade.
 
 ## Quick reference
+
+Valid on both lines unless a row says otherwise.
 
 | Operation | Call | Note |
 |---|---|---|
 | Read one | `repo.findOneBy({ id })` | excludes soft-deleted roots |
-| Read many | `repo.find({ where, relations, take, skip })` | `relations` as an object, not a string array |
+| Read many | `repo.find({ where, relations, take, skip })` | object syntax for `relations`/`select` — **required** on 1.x, accepted on 0.3.x, so write it this way on both |
 | Insert | `repo.insert(values)` | no SELECT, no cascades, no lifecycle hooks |
 | Insert-or-update | `repo.upsert(values, { conflictPaths })` | needs a unique constraint on the conflict target |
 | Persist an entity | `repo.save(entity)` | **SELECTs first**, cascades, runs subscribers |

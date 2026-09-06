@@ -14,18 +14,29 @@ This skill assumes nothing about your repository beyond what you tell it. When a
 
 ## Version baseline (verified 2026-09-06)
 
-Facts below decide real code, and several of them changed recently enough that older knowledge is wrong. Re-verify against the project's lockfile before acting.
+**Establish the project's major before applying anything on this page.** Read
+it from the lockfile — `@nestjs/core` — not from this table. Most of what
+follows is stable across recent majors, but the rows marked *since* are not,
+and applying a v12 fact to a v10 codebase produces confidently wrong advice.
+When the project's major is older than the baseline, the relevant deltas are
+in [rules/versions-and-upgrades.md](rules/versions-and-upgrades.md), which
+reads in both directions.
 
-| Fact | Value |
-|---|---|
-| Current major | **NestJS 12**, released **2026-08-27** ([release notes](https://github.com/nestjs/nest/releases/tag/v12.0.0), [migration guide](https://docs.nestjs.com/migration-guide)) |
-| Node.js | v20.19+ or v22.12+ to run; v21/v23/v25 unsupported. CLI generators need v22.22.3+/v24.15+/v26+ |
-| Module format | Core packages **ship as ESM** in v12. Migrating *your* app to ESM is optional — CJS apps keep working through Node's `require(esm)` |
-| Decorators | Still **legacy TS decorators**: `experimentalDecorators` + `emitDecoratorMetadata`, even in the ESM project template. TC39/Stage-3 decorators are **not** supported |
-| Default HTTP adapter | Express **5** (since NestJS 11); `@nestjs/platform-express@12` pins `express@5.x` |
-| TypeScript | `typescript-starter` pins `^6.x`. **TypeScript 7 currently breaks `nest build`/`nest start`** — it dropped the programmatic Compiler API ([nest-cli#3479](https://github.com/nestjs/nest-cli/issues/3479), open) |
-| Config validation | Standard Schema by default in v12 (Zod/Valibot/ArkType); Joi still works but needs **Joi 18+** and moves its settings under `validationOptions.libraryOptions` |
-| `class-transformer` | Last tagged release **0.5.1 (2021)**. Treat it as frozen, not evolving |
+| Fact | Value | Applies to |
+|---|---|---|
+| Latest major | **NestJS 12**, released **2026-08-27** ([release notes](https://github.com/nestjs/nest/releases/tag/v12.0.0), [migration guide](https://docs.nestjs.com/migration-guide)) | — |
+| Node.js | v20.19+ or v22.12+ to run; v21/v23/v25 unsupported. CLI generators need v22.22.3+/v24.15+/v26+ | **v12**; older majors allow older Node |
+| Module format | Core packages **ship as ESM**. Migrating *your* app to ESM is optional — CJS apps keep working through Node's `require(esm)` | **since v12**; v11 and earlier are CJS |
+| Decorators | **Legacy TS decorators**: `experimentalDecorators` + `emitDecoratorMetadata`, even in the ESM project template. TC39/Stage-3 decorators are **not** supported | all majors |
+| Default HTTP adapter | Express **5** | **since v11**. **v10 and earlier ship Express 4** — the route-syntax rules in [rules/controllers.md](rules/controllers.md) differ |
+| TypeScript | `typescript-starter` pins `^6.x`. **TypeScript 7 currently breaks `nest build`/`nest start`** — it dropped the programmatic Compiler API ([nest-cli#3479](https://github.com/nestjs/nest-cli/issues/3479), open) | any major using the Nest CLI |
+| Config validation | Standard Schema by default (Zod/Valibot/ArkType); Joi needs **Joi 18+** and moves its settings under `validationOptions.libraryOptions` | **since v12**. Before v12 it is Joi-shaped, flat `validationOptions`, any Joi version |
+| `class-transformer` | Last tagged release **0.5.1 (2021)**. Treat it as frozen, not evolving | all majors |
+
+Everything not marked *since* — modules and the composition root, DI and the
+`import type` trap, controllers, validation semantics, the enhancer pipeline
+and its order, exception filters, lifecycle hooks, testing — holds across v10,
+v11 and v12 alike.
 
 See [rules/versions-and-upgrades.md](rules/versions-and-upgrades.md) for the full v12 breaking-change list and the upgrade traps.
 

@@ -5,6 +5,35 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: Se
 
 ## [Unreleased]
 
+### Fixed
+
+- **Version-dependent guidance is now marked as such, in both new skills.**
+  They were written against the newest majors (NestJS 12, TypeORM 1.1.1) and
+  stated those facts flatly, which reads as universal truth to anyone on an
+  older line — and older lines are the common case in practice. Two of the
+  claims could produce actively wrong code:
+  - **Express route syntax.** Express 5 is the default adapter *since NestJS
+    11*; v10 and earlier ship Express 4, where bare `'*'` is correct and
+    `'/*splat'` is not understood. `rules/controllers.md` now states both
+    directions and says to read the adapter major before touching a
+    catch-all route.
+  - **TypeORM 0.3.x vs 1.x semantics.** On 0.3.x, `null`/`undefined` in a
+    `where` are silently ignored rather than throwing, non-nullable relations
+    `LEFT JOIN` rather than `INNER JOIN`, `orphanedRowAction: "nullify"`
+    throws rather than deleting, and the global helpers still exist. Each of
+    those is now labelled as 1.x-only with the 0.3.x behaviour stated beside
+    it, and `SKILL.md` tells a reader on 0.3.x to use the upgrade reference
+    as a *difference list* describing what their code does today.
+  - `@nestjs/config` Standard Schema validation is marked *since v12*, with
+    the version-independent `validate` function offered as the portable
+    option.
+  - Both `SKILL.md` version tables gained an "Applies to" column, and both
+    now open by telling the reader to establish the installed major from the
+    lockfile first. What is stable across majors is stated explicitly, so the
+    guards do not make the whole skill read as uncertain.
+
+## [2.0.0] - 2026-09-06
+
 ### Removed
 
 - **BREAKING — `fastify-best-practices` is gone.** Guidance on the Fastify
