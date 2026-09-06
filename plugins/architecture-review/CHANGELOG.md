@@ -5,6 +5,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: Se
 
 ## [Unreleased]
 
+### Added
+
+- README now warns that **disabling `engineering-paved-path` disables this
+  plugin too, silently** — a plugin whose declared dependency is disabled does
+  not load, with no warning, while still reading `true` in `enabledPlugins`,
+  so the symptom is that `architecture-review:architecture-reviewer` is simply
+  absent. This plugin uses that dependency for one optional enrichment; making
+  that expressible without a hard dependency is tracked separately.
+
 ### Changed
 
 - Dependency range widened to `engineering-paved-path@^1.0.0 || ^2.0.0`. This

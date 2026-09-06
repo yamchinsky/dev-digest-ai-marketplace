@@ -8,6 +8,19 @@ version: 1.0.0
 
 What TypeORM actually does, where it differs from what its API suggests, and which behaviours are undocumented and must be pinned by a test. **ORM mechanics only** — not Nest wiring (`engineering-paved-path:nestjs-best-practices`), not schema design (`engineering-paved-path:postgresql-table-design`), not layering (`engineering-paved-path:onion-architecture`).
 
+## Scope
+
+**PostgreSQL, via the `pg` driver.** TypeORM supports other databases and most
+of the layering advice here survives them, but a great deal of this skill does
+not: raw-SQL result shapes, `$1` parameter syntax, enum semantics, `RETURNING`,
+`cardinality()`, index types, `CREATE INDEX CONCURRENTLY`, and the
+`node-postgres` type-parsing behaviour are all PostgreSQL-and-`pg` specific.
+On MySQL, SQLite, MSSQL or MongoDB, treat every one of those as unverified and
+check the driver's own documentation. What does transfer: the
+`save`/`insert`/`upsert`/`update` trade-offs, `take`/`skip` vs
+`limit`/`offset`, eager relations being ignored by `QueryBuilder`, soft-delete
+filtering, the transaction-manager discipline, and migration review.
+
 ## Inputs
 
 This skill assumes nothing about your repository beyond what you tell it. When applying it, first locate (or ask for): the `DataSource` definition, the entity directory, the migrations directory and its naming convention, the migration commands, the database-backed test command and how it gets a database. If the project documents its own rules — hand-written migrations only, a particular transaction wrapper, a repository convention — **those take precedence over anything here.**

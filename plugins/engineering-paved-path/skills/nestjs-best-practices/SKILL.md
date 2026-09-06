@@ -8,6 +8,20 @@ version: 1.0.0
 
 How a NestJS application is wired, what breaks it, and why. **Runtime and wiring only** — not layering (`engineering-paved-path:onion-architecture`), not ORM mechanics (`engineering-paved-path:typeorm-patterns`), not schema design (`engineering-paved-path:postgresql-table-design`), not Zod (`engineering-paved-path:zod`).
 
+## Scope
+
+**The HTTP application.** Modules, DI, the request pipeline, validation,
+configuration, lifecycle and testing are covered. Nest's other surfaces are
+not, and they have their own seams: **microservice transports**
+(`@nestjs/microservices` — message patterns, custom transporters,
+`RpcException` instead of `HttpException`), **GraphQL** (`@nestjs/graphql` —
+resolvers, the schema-first/code-first split, `GqlExecutionContext`, which
+makes an HTTP-shaped guard or filter silently wrong), **WebSockets**
+(`@nestjs/websockets`) and **queues**. The DI, module and testing rules apply
+to all of them; the controller, validation-pipe and exception-filter rules
+assume an HTTP context. If the work is in one of those surfaces, take the
+wiring rules from here and the surface's own mechanics from its documentation.
+
 ## Inputs
 
 This skill assumes nothing about your repository beyond what you tell it. When applying it, first locate (or ask for): the application root, the composition root (the module `NestFactory.create()` is given), the feature-module directory, the bootstrap file, and the test commands and their filename conventions. If the project documents its own conventions — an `AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`, or a repository skill — **those take precedence over anything here.**

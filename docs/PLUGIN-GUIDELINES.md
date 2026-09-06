@@ -53,6 +53,19 @@ plugins/<name>/
   marketplace entry — `plugin.json` silently wins and `claude plugin tag`
   requires the two to agree.
 - `dependencies[].version` is a node-semver range; default to caret ranges.
+- **A declared dependency is load-bearing in a way that fails silently.**
+  Disabling a plugin also unloads every plugin that declares it — with **no
+  warning**, and while the dependent still reads `true` in `enabledPlugins`.
+  A consumer who disables one plugin for their own reasons can therefore lose
+  an unrelated workflow entirely, and the symptom is absence, not an error:
+  agents and skills simply are not there, and every document describing them
+  keeps saying they are. Two obligations follow:
+  - **Declare a dependency only for something the plugin genuinely requires.**
+    If a component merely *may* consult another plugin's skill when present,
+    that is an optional enrichment: reference it by namespace, state the
+    fallback, and do **not** put it in `dependencies`.
+  - **Say so where a consumer will look.** Any plugin with dependencies
+    documents in its README that disabling them takes this plugin down too.
 - No secrets anywhere in the manifest. A manifest may *name* a secret slot
   (e.g. an env var the user must provide); it never contains a value.
 

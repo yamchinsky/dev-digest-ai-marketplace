@@ -40,6 +40,14 @@ auditing the whole tree.
 
 ## Dependencies
 
+> **Disabling `engineering-paved-path` disables this plugin too**, silently —
+> a plugin whose declared dependency is disabled does not load, with no
+> warning, while still reading `true` in `enabledPlugins`. The symptom is that
+> `architecture-review:architecture-reviewer` is simply absent. If you are
+> disabling that plugin for your own reasons, expect to lose this gate with
+> it; see the tracking issue on making an optional enrichment expressible
+> without a hard dependency.
+
 - `engineering-paved-path@^1.0.0 || ^2.0.0` — the reviewer may load
   `engineering-paved-path:onion-architecture` to interpret layering/DI rules;
   the repository's own wording always wins over the skill's defaults. Both
