@@ -48,9 +48,14 @@ is deliberately framework-neutral in its rules — it states layering in terms o
 mapping those onto a given stack — so it stays useful in a repository whose
 runtime differs. The frontend skills target React + Next.js.
 
-## Provenance
+## Editorial standard
 
-Extracted from the DevDigest engineering harness and generalized: repository-
-specific paths, module names, and convention references were removed
-(`onion-architecture` received the deepest editorial pass). See each skill's
-README version history for details.
+Every skill here describes a technology, not a codebase. No skill contains a
+repository-specific path, module name, or local convention; where a skill needs
+to know something about your project, it says so in an **Inputs** section and
+asks rather than guessing — and your repository's own documented rules take
+precedence over its defaults.
+
+Skills that carry a `README.md` record their sources with verbatim URLs, their
+version history, and — where a stated behavior has no upstream documentation to
+cite — say so outright instead of implying a source that does not exist.

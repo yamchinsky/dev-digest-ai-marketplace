@@ -1,10 +1,14 @@
 # dev-digest-ai-marketplace
 
-A Claude Code plugin marketplace for the DevDigest team AI harness. It packages
-the reusable parts of the harness — the SDD (Spec-Driven Development) workflow,
-shared engineering skills, a research agent, and a generalized architecture
-reviewer — so any team repository can install them without copying files from
-the DevDigest working tree.
+A Claude Code plugin marketplace: the Spec-Driven Development (SDD) workflow,
+shared engineering knowledge skills, a read-only research agent, and a
+repository-agnostic architecture-review gate.
+
+Every plugin here is autonomous. Nothing in it is shaped by, depends on, or is
+justified by any particular consuming repository — skills describe
+technologies, agents state their inputs explicitly, and review gates read the
+*host* repository's own documented rules rather than carrying their own. Install
+them in any repository without copying files or adopting someone else's layout.
 
 ## Plugins
 
@@ -15,27 +19,34 @@ the DevDigest working tree.
 | `architecture-review` | `architecture-reviewer` — audits diffs against the repository's own documented architecture rules | `engineering-paved-path` |
 | `sdd-engineering` | The SDD workflow: `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` agents; `run-plan`, `workflow-retro`, `engineering-insights` skills | all three above |
 
-## What was extracted, and why
+## What belongs here
 
-The DevDigest harness files were classified into four groups. Only the first
-group ships here.
+A component ships here when it has a consumer scenario **outside** the
+repository it was first written in. That test decides both directions:
 
-| Group | Components | Disposition |
-|---|---|---|
-| **Reusable** | 12 knowledge skills (React/Next/NestJS/TypeORM/PostgreSQL/Zod/TypeScript/security/onion-architecture/Mermaid/testing); `researcher`; `architecture-reviewer` (generalized); `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; `run-plan` (formerly `impl`), `workflow-retro`, `engineering-insights` (generalized); their references and eval scenarios | Extracted into the four plugins after an editorial pass that removed every DevDigest-specific path, module name, and bare-name reference |
-| **Project-specific** | DevDigest `CLAUDE.md`, `pr-self-review` skill + hooks, `architecture-reviewer-lite`, `doc-writer`, `dependency-checker`, the vitest eval harness, the devdigest MCP server, product specs | Stay in the DevDigest repository — they encode its modules, contracts, and CI |
-| **Optional integrations** | Convention MCP tools used by `spec-creator` for grounding | Removed from required `tools:`; the agent falls back to CLAUDE.md/docs/code search when absent |
-| **Local leftovers** | Caches, personal memory, experiment workspaces, absolute paths | Not extracted |
+| Ships here | Stays in the consuming repository |
+|---|---|
+| Knowledge about a technology that holds for any project using it | A repository's own module map, contracts, fixtures, and CI wiring |
+| Agents and workflow skills whose inputs are stated explicitly and asked for when missing | Skills coupled to one repository's hooks, MCP servers, or directory layout |
+| A review gate that reads the *host's* documented architecture rules | The rules themselves |
+| Optional integrations that degrade silently when the host does not expose them | Anything that fails the workflow when a host-specific tool is absent |
 
-Why each reusable component updates together with the SDD workflow: the
-workflow *is* the consumer contract — `run-plan` dispatches
+The editorial standard that follows from it — no absolute paths, no
+repository-specific assumptions, explicit inputs, namespaced cross-references —
+is specified in [docs/PLUGIN-GUIDELINES.md](docs/PLUGIN-GUIDELINES.md) and
+enforced on every contribution.
+
+## How the plugins are split
+
+The SDD workflow *is* the consumer contract: `run-plan` dispatches
 `sdd-engineering:implementer` and the review gates, the planner assigns
 `engineering-paved-path:*` skills to tasks, and the spec/plan formats are the
-interfaces between the agents. Components with an independent consumer
-scenario (`researcher`, `architecture-reviewer`, the knowledge skills) live in
-their own plugins and are consumed as version-constrained dependencies;
-`workflow-retro` has no consumer scenario outside the SDD lifecycle, so it
-stays inside `sdd-engineering` and is invoked manually only.
+interfaces between the agents — so those components version together.
+Components with an independent consumer scenario (`researcher`,
+`architecture-reviewer`, the knowledge skills) live in their own plugins and
+are consumed as version-constrained dependencies. `workflow-retro` has no
+consumer scenario outside the SDD lifecycle, so it stays inside
+`sdd-engineering` and is invoked manually only.
 
 ## Install
 

@@ -7,9 +7,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: Se
 
 ### Added
 
-- Initial release: the `researcher` agent extracted from the DevDigest
-  harness — read-only project/internet research with strict report templates,
-  interview mode for ambiguous requests, and honesty rules.
+- Initial release: the `researcher` agent — read-only project/internet
+  research with strict report templates, interview mode for ambiguous
+  requests, and honesty rules.
 
 ### Changed
 

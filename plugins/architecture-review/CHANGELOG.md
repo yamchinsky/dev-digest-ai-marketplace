@@ -25,8 +25,7 @@ No behavior change to the agent, its tools, or its verdict format.
 
 ### Added
 
-- Initial release: the `architecture-reviewer` agent, generalized from the
-  DevDigest harness.
+- Initial release: the `architecture-reviewer` agent.
 - `references/rule-format.md` — the canonical structural-rule format
   (identifier, scope, constraint, severity table) and discovery locations.
 - `references/example-rules.md` — a worked four-rule example set (layering
