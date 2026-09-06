@@ -66,8 +66,10 @@ The three dependencies install automatically (the install output lists them):
 
 ## Dependencies
 
-- `engineering-paved-path@^1.0.0` — single source of the 12 knowledge skills
-  the planner assigns and the implementer loads.
+- `engineering-paved-path@^2.0.0` — single source of the 12 knowledge skills
+  the planner assigns and the implementer loads. The `^2` floor is required:
+  the skill catalog routes to `engineering-paved-path:nestjs-best-practices`
+  and `engineering-paved-path:typeorm-patterns`, which do not exist in `^1`.
 - `research-tools@^1.0.0` — `research-tools:researcher` for delegated
   discovery during planning.
 - `architecture-review@^1.0.0` — the structural review gate; repositories

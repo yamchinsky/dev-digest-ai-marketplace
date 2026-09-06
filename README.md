@@ -10,7 +10,7 @@ the DevDigest working tree.
 
 | Plugin | What it provides | Depends on |
 |---|---|---|
-| `engineering-paved-path` | 12 shared knowledge skills (React, Next.js, Fastify, Drizzle, PostgreSQL, Zod, TypeScript, security, onion architecture, Mermaid, testing) | — |
+| `engineering-paved-path` | 12 shared knowledge skills (React, Next.js, NestJS, TypeORM, PostgreSQL, Zod, TypeScript, security, onion architecture, Mermaid, testing) | — |
 | `research-tools` | `researcher` — generic read-only research agent (codebase + web) | — |
 | `architecture-review` | `architecture-reviewer` — audits diffs against the repository's own documented architecture rules | `engineering-paved-path` |
 | `sdd-engineering` | The SDD workflow: `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier` agents; `run-plan`, `workflow-retro`, `engineering-insights` skills | all three above |
@@ -22,7 +22,7 @@ group ships here.
 
 | Group | Components | Disposition |
 |---|---|---|
-| **Reusable** | 12 knowledge skills (React/Next/Fastify/Drizzle/PostgreSQL/Zod/TypeScript/security/onion-architecture/Mermaid/testing); `researcher`; `architecture-reviewer` (generalized); `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; `run-plan` (formerly `impl`), `workflow-retro`, `engineering-insights` (generalized); their references and eval scenarios | Extracted into the four plugins after an editorial pass that removed every DevDigest-specific path, module name, and bare-name reference |
+| **Reusable** | 12 knowledge skills (React/Next/NestJS/TypeORM/PostgreSQL/Zod/TypeScript/security/onion-architecture/Mermaid/testing); `researcher`; `architecture-reviewer` (generalized); `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; `run-plan` (formerly `impl`), `workflow-retro`, `engineering-insights` (generalized); their references and eval scenarios | Extracted into the four plugins after an editorial pass that removed every DevDigest-specific path, module name, and bare-name reference |
 | **Project-specific** | DevDigest `CLAUDE.md`, `pr-self-review` skill + hooks, `architecture-reviewer-lite`, `doc-writer`, `dependency-checker`, the vitest eval harness, the devdigest MCP server, product specs | Stay in the DevDigest repository — they encode its modules, contracts, and CI |
 | **Optional integrations** | Convention MCP tools used by `spec-creator` for grounding | Removed from required `tools:`; the agent falls back to CLAUDE.md/docs/code search when absent |
 | **Local leftovers** | Caches, personal memory, experiment workspaces, absolute paths | Not extracted |

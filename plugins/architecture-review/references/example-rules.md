@@ -11,7 +11,7 @@ A complete, real-world rule set in the canonical format (see
 
 Domain-layer files must not import from the Presentation or Infrastructure
 layers. Allowed imports: other domain types in the same module, shared
-contract types. Forbidden: `fastify`, `express`, `http`, reply/response
+contract types. Forbidden: `@nestjs/common`, `express`, `http`, reply/response
 types, adapter classes, repository classes.
 
 | Severity | Trigger |

@@ -134,9 +134,9 @@ of the task):
 
 | Files a task owns | Assign |
 |---|---|
-| HTTP routes / Fastify plugins / server config | `engineering-paved-path:fastify-best-practices` |
+| HTTP controllers / module wiring / DI / server config | `engineering-paved-path:nestjs-best-practices` |
 | Backend services / repositories / adapters / module placement | `engineering-paved-path:onion-architecture` |
-| Drizzle queries, schema files | `engineering-paved-path:drizzle-orm-patterns` |
+| ORM entities, queries, migrations | `engineering-paved-path:typeorm-patterns` |
 | New tables / indexes / constraints | `engineering-paved-path:postgresql-table-design` |
 | Zod schemas (DTOs, contracts, decoders) | `engineering-paved-path:zod` |
 | React components / hooks / state | `engineering-paved-path:react-best-practices` |

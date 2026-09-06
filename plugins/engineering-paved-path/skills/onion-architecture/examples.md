@@ -1,10 +1,19 @@
 # Onion architecture — concrete examples
 
-Skeletons referenced from [SKILL.md](SKILL.md). Paths assume the layout from
-SKILL.md §1: an API package rooted at `src/`, a shared contracts package
+Skeletons referenced from [SKILL.md](SKILL.md). They are written in **NestJS +
+TypeORM**, which is one instantiation of the rules — not a requirement. The
+*shape* is the point: an HTTP edge that only translates, a service that only
+orchestrates, a repository that owns the ORM, adapters behind ports, and a
+single composition root. Map the names onto your stack using the vocabulary
+table in SKILL.md.
+
+Paths assume an API package rooted at `src/`, a shared contracts package
 imported as `@app/shared`, and (for Example 3) a pure engine package imported
-as `@app/engine`. Adapt the names to your repository — the *shape* is the
-point, not the paths.
+as `@app/engine`.
+
+For the framework mechanics — provider forms, injection tokens, validation
+pipes, testing modules — see `engineering-paved-path:nestjs-best-practices`.
+For the ORM mechanics see `engineering-paved-path:typeorm-patterns`.
 
 ---
 
@@ -12,129 +21,114 @@ point, not the paths.
 
 Scenario: add a `widgets` module — list and create widgets, scoped to a workspace.
 
-### `src/modules/widgets/routes.ts`
+### `src/modules/widgets/dto/create-widget.dto.ts`
 
 ```ts
-import type { FastifyInstance } from 'fastify';
-import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { z } from 'zod';
-import { getContext } from '../_shared/context.js';
-import { IdParams } from '../_shared/schemas.js';
-import { WidgetService } from './service.js';
+import { IsIn, IsString, MaxLength, MinLength } from 'class-validator';
 
-// Transport DTOs (HTTP edge). Keep separate from any domain Zod schemas.
-const CreateWidgetBody = z.object({
-  name: z.string().min(1).max(80),
-  color: z.enum(['red', 'green', 'blue']),
-});
+// Transport DTO (HTTP edge). Keep separate from any domain schema.
+export class CreateWidgetDto {
+  @IsString()
+  @MinLength(1)
+  @MaxLength(80)
+  name!: string;
 
-export default async function widgetsRoutes(appBase: FastifyInstance) {
-  const app = appBase.withTypeProvider<ZodTypeProvider>();
-  const { container } = app;
-  const service = new WidgetService(container);
-
-  app.get('/widgets', async (req) => {
-    const { workspaceId } = await getContext(container, req);
-    return { widgets: await service.list(workspaceId) };
-  });
-
-  app.post(
-    '/widgets',
-    { schema: { body: CreateWidgetBody } },
-    async (req) => {
-      const { workspaceId, userId } = await getContext(container, req);
-      const widget = await service.create(workspaceId, userId, req.body);
-      return { widget };
-    },
-  );
-
-  app.get(
-    '/widgets/:id',
-    { schema: { params: IdParams } },
-    async (req) => {
-      const { workspaceId } = await getContext(container, req);
-      return { widget: await service.getById(workspaceId, req.params.id) };
-    },
-  );
+  @IsIn(['red', 'green', 'blue'])
+  color!: 'red' | 'green' | 'blue';
 }
 ```
 
-Then in `src/modules/index.ts`:
+### `src/modules/widgets/widgets.controller.ts`
 
 ```ts
-import widgetsRoutes from './widgets/routes.js';
-// …existing imports…
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { CurrentContext } from '../../platform/current-context.decorator';
+import type { RequestContext } from '../../platform/request-context';
+import { CreateWidgetDto } from './dto/create-widget.dto';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { WidgetsService } from './widgets.service';
 
-export const modules = [
-  // …existing entries…
-  { name: 'widgets', plugin: widgetsRoutes },
-];
+@Controller('widgets')
+export class WidgetsController {
+  constructor(private readonly widgets: WidgetsService) {}
+
+  @Get()
+  list(@CurrentContext() ctx: RequestContext) {
+    return this.widgets.list(ctx.workspaceId);
+  }
+
+  @Post()
+  create(@CurrentContext() ctx: RequestContext, @Body() body: CreateWidgetDto) {
+    return this.widgets.create(ctx.workspaceId, ctx.userId, body);
+  }
+
+  @Get(':id')
+  getOne(@CurrentContext() ctx: RequestContext, @Param('id', ParseUUIDPipe) id: string) {
+    return this.widgets.getById(ctx.workspaceId, id);
+  }
+}
 ```
 
-### `src/modules/widgets/service.ts`
+Notes:
+- Validation runs in the globally registered pipe, **before** the handler. No parsing in the body.
+- `@CurrentContext()` is one custom parameter decorator over the execution context — it is what keeps framework request types out of every signature.
+- The `eslint-disable` on the service import is deliberate: converting a constructor-injected class to `import type` erases the DI metadata and breaks the container at boot. Token-resolved parameters do not need it.
+
+### `src/modules/widgets/widgets.service.ts`
 
 ```ts
-import type { Container } from '../../platform/container.js';
-import { NotFoundError } from '../../platform/errors.js';
-import { WidgetRepository } from './repository.js';
+import { Injectable, NotFoundException } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { WidgetsRepository } from './widgets.repository';
 
 export interface CreateWidgetInput {
   name: string;
   color: 'red' | 'green' | 'blue';
 }
 
-export class WidgetService {
-  private repo: WidgetRepository;
-
-  constructor(private container: Container) {
-    this.repo = new WidgetRepository(container.db);
-  }
+@Injectable()
+export class WidgetsService {
+  constructor(private readonly repo: WidgetsRepository) {}
 
   list(workspaceId: string) {
     return this.repo.listByWorkspace(workspaceId);
   }
 
-  async create(workspaceId: string, userId: string, input: CreateWidgetInput) {
+  create(workspaceId: string, userId: string, input: CreateWidgetInput) {
     return this.repo.insert({ workspaceId, createdBy: userId, ...input });
   }
 
   async getById(workspaceId: string, id: string) {
     const widget = await this.repo.findById(workspaceId, id);
-    if (!widget) throw new NotFoundError(`widget ${id} not found`);
+    if (!widget) throw new NotFoundException(`widget ${id} not found`);
     return widget;
   }
 }
 ```
 
 Notes:
-- Constructor takes `Container`, never raw adapters.
-- Throws `NotFoundError` (from `platform/errors.ts`) — the global handler renders the API error envelope.
-- No Drizzle import here — the repository owns it.
+- Takes its repository by constructor injection; it never constructs one.
+- No ORM import here — the repository owns it.
+- Throws a typed error. The global exception filter renders the envelope.
 
-### `src/modules/widgets/repository.ts`
+### `src/modules/widgets/widgets.repository.ts`
 
 ```ts
-import { and, eq } from 'drizzle-orm';
-import type { Db } from '../../db/client.js';
-import * as t from '../../db/schema.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import type { Repository } from 'typeorm';       // token-resolved → `import type` is fine
+import { Widget } from './widget.entity';
 
-// Drizzle row type — module-internal. Map to a shared type if it ever crosses
-// the module boundary in a wider-than-this-module API.
-export type WidgetRow = typeof t.widgets.$inferSelect;
-
-export class WidgetRepository {
-  constructor(private db: Db) {}
+@Injectable()
+export class WidgetsRepository {
+  constructor(@InjectRepository(Widget) private readonly widgets: Repository<Widget>) {}
 
   listByWorkspace(workspaceId: string) {
-    return this.db.select().from(t.widgets).where(eq(t.widgets.workspaceId, workspaceId));
+    return this.widgets.findBy({ workspaceId });
   }
 
   findById(workspaceId: string, id: string) {
-    return this.db
-      .select()
-      .from(t.widgets)
-      .where(and(eq(t.widgets.workspaceId, workspaceId), eq(t.widgets.id, id)))
-      .then((rows) => rows[0]);
+    return this.widgets.findOneBy({ workspaceId, id });
   }
 
   async insert(input: {
@@ -142,51 +136,91 @@ export class WidgetRepository {
     createdBy: string;
     name: string;
     color: 'red' | 'green' | 'blue';
-  }): Promise<WidgetRow> {
-    const [row] = await this.db.insert(t.widgets).values(input).returning();
-    return row;
+  }): Promise<Widget> {
+    const { identifiers } = await this.widgets.insert(input);
+    return this.widgets.findOneByOrFail({ id: identifiers[0].id as string });
   }
 }
 ```
 
 Notes:
-- `Db` is imported from `../../db/client.js` — the only DB import in the module.
-- Workspace scoping is enforced in **every** query (`and(eq(workspaceId), …)`).
-- Multi-aggregate module? Split into `repository/widget.repo.ts` + `repository/tag.repo.ts` and have `repository.ts` compose them.
+- The only ORM importer in the module.
+- Workspace scoping is enforced in **every** query.
+- Reads no configuration. When a query needs an env-derived value, take it as a parameter.
+- Multi-aggregate module? Split into `repository/widget.repo.ts` + `repository/tag.repo.ts` and compose them.
+
+### `src/modules/widgets/widgets.module.ts`
+
+```ts
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Widget } from './widget.entity';
+import { WidgetsController } from './widgets.controller';
+import { WidgetsRepository } from './widgets.repository';
+import { WidgetsService } from './widgets.service';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Widget])],
+  controllers: [WidgetsController],
+  providers: [WidgetsService, WidgetsRepository],
+  exports: [WidgetsService],           // the service, never the repository
+})
+export class WidgetsModule {}
+```
+
+Then add `WidgetsModule` to the composition root — and to nowhere else:
+
+```ts
+// src/app.module.ts
+@Module({
+  imports: [/* …existing… */ WidgetsModule],
+})
+export class AppModule {}
+```
+
+The module must stay independently bootable:
+
+```ts
+await Test.createTestingModule({ imports: [WidgetsModule] }).compile();
+```
+
+If that fails while the whole app boots, the module is relying on something a sibling happens to provide.
 
 ### What NOT to do
 
 ```ts
-// ❌ Drizzle in the service
-// service.ts
-import { eq } from 'drizzle-orm';
-import * as t from '../../db/schema.js';
-class WidgetService {
-  list(workspaceId: string) {
-    return this.container.db.select().from(t.widgets).where(eq(t.widgets.workspaceId, workspaceId));
-  }
+// ❌ ORM in the service
+@Injectable()
+class WidgetsService {
+  constructor(@InjectRepository(Widget) private readonly widgets: Repository<Widget>) {}
+  list(workspaceId: string) { return this.widgets.findBy({ workspaceId }); }
 }
 
-// ❌ Schema.parse in the handler
-app.post('/widgets', async (req) => {
-  const body = CreateWidgetBody.parse(req.body); // bypasses 422 path
-  // …
-});
+// ❌ parsing in the handler — bypasses the validation pipe and the error path
+@Post()
+create(@Req() req: Request) {
+  const body = JSON.parse(req.body as string);
+}
 
-// ❌ Service-to-service import
-// widgets/service.ts
-import { OrderService } from '../orders/service.js'; // forbidden cross-module dep
+// ❌ the request object crossing into the service
+create(@Req() req: Request) { return this.widgets.create(req); }
+
+// ❌ another module's repository
+import { OrdersRepository } from '../orders/orders.repository';
+
+// ❌ exporting the repository — it is module-private
+@Module({ exports: [WidgetsService, WidgetsRepository] })
 ```
 
 ---
 
 ## Example 2: Adding a new outbound port
 
-Scenario: the widget creation flow needs to call a third-party "Sentiment API" to score the widget name. New outbound HTTP → new port.
+Scenario: widget creation should call a third-party "Sentiment API" to score the widget name. New outbound HTTP → new port.
 
 ### Step 1 — declare the port in the shared contracts package
 
-In `shared/adapters.ts`:
+`shared/adapters.ts`:
 
 ```ts
 // ---------- Sentiment ----------
@@ -195,20 +229,30 @@ export interface SentimentClient {
 }
 ```
 
-Re-export from the package index if it isn't picked up by an existing `export *` line.
+Re-export from the package index if an existing `export *` does not pick it up.
 
-### Step 2 — concrete adapter
+### Step 2 — a DI token
 
-`src/adapters/sentiment/http.ts`:
+An interface has no runtime identity, so it cannot be an injection token.
+
+`src/modules/widgets/widgets.tokens.ts`:
+
+```ts
+export const SENTIMENT_CLIENT = Symbol('SENTIMENT_CLIENT');
+```
+
+### Step 3 — concrete adapter
+
+`src/adapters/sentiment/http-sentiment.adapter.ts`:
 
 ```ts
 import type { SentimentClient } from '@app/shared';
-import { ExternalServiceError } from '../../platform/errors.js';
+import { ExternalServiceError } from '../../platform/errors';
 
 export class HttpSentimentClient implements SentimentClient {
   constructor(
-    private baseUrl: string,
-    private apiKey: string,
+    private readonly baseUrl: string,
+    private readonly apiKey: string,
   ) {}
 
   async score(text: string) {
@@ -217,89 +261,105 @@ export class HttpSentimentClient implements SentimentClient {
       headers: { authorization: `Bearer ${this.apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({ text }),
     });
-    if (!res.ok) {
-      throw new ExternalServiceError(`sentiment api ${res.status}`);
-    }
-    const json = (await res.json()) as { value: number; label: 'pos' | 'neg' | 'neu' };
-    return json;
+    if (!res.ok) throw new ExternalServiceError(`sentiment api ${res.status}`);
+    return (await res.json()) as Awaited<ReturnType<SentimentClient['score']>>;
   }
 }
 ```
 
 Notes:
-- `implements SentimentClient` — typecheck is the contract.
-- Failure throws `ExternalServiceError` (from `platform/errors.ts`) so the global handler can shape the response. **Never** swallow + rethrow with a string.
-- No DB, no Fastify, no module imports — adapters are leaves.
+- `implements SentimentClient` — the typecheck is the contract.
+- Failure throws a typed application error so the global filter can shape the response. **Never** swallow and rethrow with a bare string.
+- No DB, no framework, no module imports — adapters are leaves.
 
-Re-export from `src/adapters/index.ts`:
+### Step 4 — a factory that owns the safety checks
 
-```ts
-export { HttpSentimentClient } from './sentiment/http.js';
-```
-
-### Step 3 — DI wiring in `src/platform/container.ts`
+`src/adapters/sentiment/sentiment.factory.ts`:
 
 ```ts
+import type { ConfigService } from '@nestjs/config';
 import type { SentimentClient } from '@app/shared';
-import { HttpSentimentClient } from '../adapters/sentiment/http.js';
-import { ConfigError } from './errors.js';
+import { ConfigError } from '../../platform/errors';
+import { HttpSentimentClient } from './http-sentiment.adapter';
+import { NoopSentimentClient } from './noop-sentiment.adapter';
 
-export interface ContainerOverrides {
-  // …existing fields…
-  sentiment?: SentimentClient;
-}
+const STUB_SAFE_ENVIRONMENTS = new Set(['development', 'test']);
 
-export class Container {
-  // …existing fields…
-  private _sentiment?: SentimentClient;
-
-  sentiment(): SentimentClient {
-    if (this._sentiment) return this._sentiment;
-    if (!this.config.SENTIMENT_ENABLED) {
-      throw new ConfigError('sentiment is disabled (SENTIMENT_ENABLED=false)');
-    }
-    const key = this.config.SENTIMENT_API_KEY;
-    if (!key) throw new ConfigError('SENTIMENT_API_KEY missing');
-    this._sentiment = new HttpSentimentClient(this.config.SENTIMENT_BASE_URL, key);
-    return this._sentiment;
+export function createSentimentClient(config: ConfigService): SentimentClient {
+  if (!config.get<boolean>('SENTIMENT_ENABLED')) {
+    const env = config.get<string>('NODE_ENV') ?? '';
+    if (STUB_SAFE_ENVIRONMENTS.has(env)) return new NoopSentimentClient();
+    throw new ConfigError(`sentiment is disabled while NODE_ENV=${env || '(unset)'}`);
   }
+  // Gate first, credentials second: the SDK constructor never runs on a disabled path.
+  return new HttpSentimentClient(
+    config.getOrThrow('SENTIMENT_BASE_URL'),
+    config.getOrThrow('SENTIMENT_API_KEY'),
+  );
 }
 ```
 
 Notes:
-- Resolver is lazy: SDK constructor never runs until the adapter is asked for. Gate check happens **before** any keys are read or clients constructed.
-- Cached on the container instance — one per app instance.
-- Override path for tests: `new Container({ ..., overrides: { sentiment: new MockSentimentClient() } })`.
+- The environment check is a **positive allow-list**. `!== 'production'` silently admits a typo like `stagng`.
+- The refusal message interpolates the real value rather than naming an environment.
+- This factory is the *only* legitimate binding for the token. A second module that binds `HttpSentimentClient` directly loses every check above.
 
-### Step 4 — consume from a service
+### Step 5 — bind it
 
 ```ts
-// widgets/service.ts
-async create(workspaceId: string, userId: string, input: CreateWidgetInput) {
-  const sentiment = this.container.sentiment().score(input.name).catch(() => null);
-  const row = await this.repo.insert({ workspaceId, createdBy: userId, ...input });
-  const scored = await sentiment;
-  if (scored) await this.repo.attachSentiment(row.id, scored);
-  return row;
+// src/modules/widgets/widgets.module.ts
+providers: [
+  WidgetsService,
+  WidgetsRepository,
+  { provide: SENTIMENT_CLIENT, useFactory: createSentimentClient, inject: [ConfigService] },
+],
+```
+
+If a second module needs the same port later, it imports this module (with `SENTIMENT_CLIENT` added to `exports`) or the port moves to its own module — it does **not** re-bind the class.
+
+### Step 6 — consume from the service
+
+```ts
+@Injectable()
+export class WidgetsService {
+  constructor(
+    private readonly repo: WidgetsRepository,
+    @Inject(SENTIMENT_CLIENT) private readonly sentiment: SentimentClient,
+  ) {}
+
+  async create(workspaceId: string, userId: string, input: CreateWidgetInput) {
+    const scoring = this.sentiment.score(input.name).catch(() => null);
+    const widget = await this.repo.insert({ workspaceId, createdBy: userId, ...input });
+    const scored = await scoring;
+    if (scored) await this.repo.attachSentiment(widget.id, scored);
+    return widget;
+  }
 }
 ```
 
-The service consumes the port via `this.container.sentiment()`. It never sees `fetch` or the SDK.
+The service consumes the port through its token. It never sees `fetch` or the SDK.
 
-### Step 5 — test fake
+### Step 7 — the test fake
 
-Add to `src/adapters/mocks.ts`:
+`src/adapters/mocks.ts`:
 
 ```ts
 import type { SentimentClient } from '@app/shared';
 
 export class MockSentimentClient implements SentimentClient {
-  constructor(private fixed: { value: number; label: 'pos' | 'neg' | 'neu' } = { value: 0, label: 'neu' }) {}
+  constructor(private readonly fixed = { value: 0, label: 'neu' as const }) {}
   async score() { return this.fixed; }
 }
 ```
 
-Now the widget service tests can pass `{ sentiment: new MockSentimentClient({ value: 0.9, label: 'pos' }) }` via `ContainerOverrides` and stay hermetic (no network, no `.it.` suffix).
+```ts
+const moduleRef = await Test.createTestingModule({ imports: [WidgetsModule] })
+  .overrideProvider(SENTIMENT_CLIENT)
+  .useValue(new MockSentimentClient({ value: 0.9, label: 'pos' }))
+  .compile();
+```
+
+Hermetic: no network, no `.integration-spec.` suffix. Note that overriding the provider also skips the factory — so keep one test that compiles the module **without** overrides, or the factory's own wiring is never exercised.
 
 ---
 
@@ -307,7 +367,7 @@ Now the widget service tests can pass `{ sentiment: new MockSentimentClient({ va
 
 Scenario: the engine (a pure computation package, e.g. an analysis pipeline) needs the project's `README.md` text to bias its output.
 
-The wrong instinct is to read it from inside the engine. That breaks purity. The right move is to take it as an argument and let the caller (the host application) supply it.
+The wrong instinct is to read it from inside the engine. That breaks purity. The right move is to take it as an argument and let the host supply it.
 
 ### ❌ Wrong: filesystem access in the engine
 
@@ -321,15 +381,14 @@ export async function runAnalysis(input: AnalysisInput) {
   // - filesystem access in a pure engine
   // - process.cwd() assumption
   // - now every other entry point (CLI, CI) needs the file at cwd, too
-  // …
 }
 ```
 
-This fails the purity checklist on every line: fs import, `process.cwd()` read, and the engine now silently depends on a working directory layout.
+This fails the purity checklist on every line: fs import, `process.cwd()` read, and the engine now silently depends on a working-directory layout.
 
 ### ✅ Right: take it as an argument
 
-In `engine/src/run.ts`:
+`engine/src/run.ts`:
 
 ```ts
 export interface AnalysisInput {
@@ -355,19 +414,18 @@ If a new public type came out of this, re-export it from `engine/src/index.ts` �
 
 ### ✅ The host application reads the file
 
-In `src/modules/analyses/service.ts`:
-
 ```ts
+// src/modules/analyses/analyses.service.ts
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { runAnalysis } from '@app/engine';
 
-const readme = await readFile(join(this.container.config.REPOS_DIR, repo.slug, 'README.md'), 'utf8')
+const readme = await readFile(join(this.config.getOrThrow('REPOS_DIR'), repo.slug, 'README.md'), 'utf8')
   .catch(() => undefined);
 
 const outcome = await runAnalysis({
   // …existing inputs…
-  llm: this.container.llm(agent.providerId),
+  llm: this.llm,
   readme,
 });
 ```
@@ -378,6 +436,7 @@ The host owns the I/O. The engine stays pure, hermetic-testable, and reusable fr
 
 - [x] No `node:fs` in the engine package
 - [x] No `process.env` in the engine package
+- [x] No DI container dependency in the engine package
 - [x] New optional input declared on the input struct
 - [x] Input assembly no-ops on empty `readme` (matches existing slot behavior)
 - [x] Public types exported from `engine/src/index.ts`
