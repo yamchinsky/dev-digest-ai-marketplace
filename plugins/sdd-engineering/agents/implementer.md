@@ -57,9 +57,9 @@ checks it against the plan's list.
 
 If your task has no Skills line, derive the list yourself from the touched
 file types using the `engineering-paved-path` catalog (backend layering →
-`engineering-paved-path:onion-architecture`, Fastify routes →
-`engineering-paved-path:fastify-best-practices`, Drizzle →
-`engineering-paved-path:drizzle-orm-patterns`, schema design →
+`engineering-paved-path:onion-architecture`, NestJS controllers and wiring →
+`engineering-paved-path:nestjs-best-practices`, TypeORM →
+`engineering-paved-path:typeorm-patterns`, schema design →
 `engineering-paved-path:postgresql-table-design`, Zod →
 `engineering-paved-path:zod`, React components →
 `engineering-paved-path:react-best-practices`, component tests →

@@ -98,7 +98,7 @@ my-app/
 │   │   └── useMediaQuery.ts
 │   │
 │   ├── lib/                           # wrappers around external libs
-│   │   ├── db.ts                      # drizzle/prisma setup
+│   │   ├── db.ts                      # ORM client setup
 │   │   ├── auth.ts                    # auth provider setup
 │   │   ├── stripe.ts
 │   │   └── cn.ts                      # className helper
@@ -133,7 +133,7 @@ my-app/
 ### What does NOT go where
 - A Stripe webhook handler does NOT go in `features/billing/` — it goes under `app/api/webhooks/stripe/route.ts` (Next.js convention)
 - A pure `format-currency` does NOT go in `lib/` — it goes in `utils/` (no third-party dep)
-- Drizzle DB setup does NOT go in `services/` — it goes in `lib/db.ts` (it's a wrapper)
+- ORM client setup does NOT go in `services/` — it goes in `lib/db.ts` (it's a wrapper)
 - A billing query function called from a hook does NOT go in `utils/` — it goes in `features/billing/api/` or `services/billing.ts`
 
 ---

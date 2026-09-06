@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "engineering-paved-path",
-  "version": "1.0.0",
-  "description": "Twelve shared engineering knowledge skills: React, React Testing Library, Next.js, frontend architecture, Fastify, onion architecture, Drizzle ORM, PostgreSQL table design, Zod, TypeScript, web security (OWASP), and Mermaid diagrams.",
+  "version": "2.0.0",
+  "description": "Twelve shared engineering knowledge skills: React, React Testing Library, Next.js, frontend architecture, NestJS, onion architecture, TypeORM, PostgreSQL table design, Zod, TypeScript, web security (OWASP), and Mermaid diagrams.",
   "author": {
     "name": "Pavlo Yamchinsky"
   },
@@ -10,8 +10,8 @@
     "best-practices",
     "react",
     "nextjs",
-    "fastify",
-    "drizzle",
+    "nestjs",
+    "typeorm",
     "postgresql",
     "zod",
     "typescript",

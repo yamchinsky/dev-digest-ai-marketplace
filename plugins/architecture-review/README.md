@@ -40,9 +40,12 @@ auditing the whole tree.
 
 ## Dependencies
 
-- `engineering-paved-path@^1.0.0` — the reviewer may load
+- `engineering-paved-path@^1.0.0 || ^2.0.0` — the reviewer may load
   `engineering-paved-path:onion-architecture` to interpret layering/DI rules;
-  the repository's own wording always wins over the skill's defaults.
+  the repository's own wording always wins over the skill's defaults. Both
+  majors are accepted because that skill exists in both, and this plugin uses
+  nothing else from the dependency — narrowing to `^2` would force a major bump
+  here for a change that does not affect this plugin's behavior.
 
 ## Provenance
 

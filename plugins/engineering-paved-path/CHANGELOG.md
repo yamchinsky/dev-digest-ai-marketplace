@@ -3,6 +3,71 @@
 All notable changes to `engineering-paved-path` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [Unreleased]
+
+### Removed
+
+- **BREAKING — `fastify-best-practices` is gone.** Guidance on the Fastify
+  request lifecycle, plugin encapsulation, JSON-Schema validation, hooks,
+  serialization and Pino logging is no longer served by this plugin. A project
+  that installed the plugin for that content loses it on update.
+- **BREAKING — `drizzle-orm-patterns` is gone.** Guidance on Drizzle schema
+  builders, query syntax, relations, transactions and Drizzle Kit migrations is
+  no longer served by this plugin.
+
+Both were vendored or written for a stack this plugin no longer serves, and a
+wrong-stack skill selected by name is worse than no skill. There is no
+deprecation window: a skill that answers with the wrong framework cannot be
+"soft-removed".
+
+### Added
+
+- **`nestjs-best-practices`** — NestJS application patterns: modules and the
+  single composition root, providers and injection tokens, the `import type`
+  metadata trap that breaks DI at boot while typechecking clean, thin
+  controllers, `class-validator` DTOs and `ValidationPipe` semantics, the
+  guard/interceptor/pipe/filter pipeline and its execution order, exception
+  filters and error envelopes, `ConfigModule` and fail-closed factories,
+  lifecycle and shutdown hooks, `TypeOrmModule` wiring, and testing lanes with
+  `Test.createTestingModule`. Includes a dated version baseline (NestJS 12,
+  released 2026-08-27) and an upgrade file covering the v12 breaking changes,
+  the ESM/CJS position, Express 5 route parsing, and the currently-open
+  TypeScript 7 incompatibility with the Nest CLI.
+- **`typeorm-patterns`** — TypeORM mechanics for PostgreSQL services:
+  `DataSource` configuration and pooling, entities and relations, the
+  `save`/`insert`/`upsert`/`update` trade-offs, `QueryBuilder` versus find
+  semantics, raw-SQL result shapes, transactions and query-runner obligations,
+  soft deletes and which read paths silently do not filter, hand-written
+  migration discipline, the constraints expressible at the entity boundary, and
+  the PostgreSQL/`node-postgres` behaviour the ORM does not mediate. Baselined
+  on TypeORM 1.1.1 (2026-09-01) with a full 0.3 → 1.x upgrade reference.
+
+Both skills record every source URL in their `README.md`, and label the handful
+of behaviours that are established by field evidence rather than by
+documentation.
+
+### Changed
+
+- **`onion-architecture` is now stack-neutral.** Its description and all rule
+  prose state layering in framework-neutral terms (HTTP edge / service /
+  repository / adapter / platform / shared contract); a vocabulary table maps
+  those onto NestJS + TypeORM and onto a framework-less setup; `examples.md` is
+  rewritten in NestJS + TypeORM as one clearly-labelled instantiation.
+- **`onion-architecture`'s DI position is corrected.** It previously read as a
+  blanket prohibition on decorator-based DI, which is backwards for a framework
+  where DI *is* the framework. It now says: use the framework's container where
+  the framework provides one, compose manually where it does not, and keep the
+  pure engine package container-free either way.
+- `onion-architecture` absorbed three rules from the runtime skills it used to
+  defer to: bind a port through its factory rather than to the concrete adapter
+  class, repositories never read configuration, and a hermetic test proves
+  logic while only a real module compile proves wiring.
+- Plugin description and keywords now name NestJS and TypeORM instead of
+  Fastify and Drizzle. The skill count is unchanged at twelve — two skills were
+  removed and two added.
+- `frontend-architecture` no longer names a specific ORM in its file-placement
+  examples.
+
 ## [1.0.0] - 2026-07-12
 
 ### Added

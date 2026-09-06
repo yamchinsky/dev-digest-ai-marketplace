@@ -3,6 +3,24 @@
 All notable changes to `sdd-engineering` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [Unreleased]
+
+### Changed
+
+- **BREAKING — requires `engineering-paved-path@^2.0.0`.** The skill catalog
+  the planner assigns from, and the fallback list the implementer derives from
+  when a task carries no `Skills (mandatory)` line, now route backend work to
+  `engineering-paved-path:nestjs-best-practices` (HTTP controllers, module
+  wiring, DI, server config) and `engineering-paved-path:typeorm-patterns` (ORM
+  entities, queries, migrations). Those skills do not exist in
+  `engineering-paved-path@^1`, so the dependency floor moves with them and a
+  consumer pinned to the `^1` line can no longer resolve this plugin.
+- A backend plan produced for a NestJS + TypeORM repository now reaches the
+  matching skills by name, instead of routing to skills for a different stack.
+
+Dependencies on `research-tools` and `architecture-review` are unchanged
+(`^1.0.0`).
+
 ## [1.1.0] - 2026-07-12
 
 ### Added
