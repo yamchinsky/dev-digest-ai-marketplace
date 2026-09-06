@@ -121,7 +121,7 @@ This is what keeps `@Req() req` — and with it framework types — out of contr
 
 ## Rate limiting
 
-`@nestjs/throttler` is the standard answer. Two operational facts:
+Rate limiting is a **guard**, so the seam is always there. `@nestjs/throttler` is the common package for it — if the project already has it, two operational facts matter; if it does not, a hand-written guard over the same seam is a legitimate answer and adding a package is its owners' call:
 
 - **Version gap (2026-09-06):** the current `@nestjs/throttler@6.5.0` peer range tops out at `@nestjs/core@^11`; it does not yet declare `^12`. Check before assuming a clean install on NestJS 12.
 - **Every booted application instance gets its own storage** unless you configure a shared one. In an end-to-end suite where each spec file boots its own application, the throttle budget is per file — and a test that exceeds it gets a `429` that reads as a wrong-status-code assertion failure, not as rate limiting. Budget the calls and reuse one fixture account per file. See [testing.md](testing.md).

@@ -117,6 +117,14 @@ require anything to make its own guidance apply.
 - **Whatever the project already uses is what to write.** Do not introduce a
   second library for a job the host already solved because the skill prefers
   a different one.
+- **Write against the seam, not the package.** Where a framework provides an
+  extension point and the ecosystem provides packages that fill it, the
+  durable guidance is the seam — the rule holds whichever package the host
+  picked, or none. State up front which parts of the stack are always present
+  and which are separate packages a project may not have, then show a
+  specific library as *one instantiation*, clearly labelled. A skill whose
+  advice evaporates when the host swapped one library for another was written
+  against the wrong thing.
 - **Read the project's reality before advising.** Package manager and
   workspace topology come from its lockfiles; framework and ORM majors from
   its manifest — never from this marketplace's baseline tables, which record

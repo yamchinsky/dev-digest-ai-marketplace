@@ -7,6 +7,8 @@ metadata:
 
 # Configuration
 
+`@nestjs/config` is a **separate package**. The principles here — resolve configuration through a provider, validate the whole environment once at boot, never read `process.env` deep in the tree — hold without it: a plain `useFactory` provider that parses and validates `process.env` gives you the same seam. The snippets below assume the package because it is the common choice.
+
 ## `ConfigModule` baseline
 
 ```ts

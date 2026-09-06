@@ -9,6 +9,8 @@ metadata:
 
 This file covers the **Nest side** of the database: how the connection is registered, how repositories reach a service, and where the boundary sits. Query construction, entity mapping, migrations, transactions and soft deletes belong to `engineering-paved-path:typeorm-patterns`; PostgreSQL schema design belongs to `engineering-paved-path:postgresql-table-design`.
 
+`@nestjs/typeorm` is a **separate package**, and so is every ORM integration. What generalises is the boundary: connection options resolved asynchronously from configuration, the ORM confined to a repository class, and nothing above it holding a connection handle. Substitute the equivalents for whatever the project uses.
+
 ## Registration
 
 ```ts

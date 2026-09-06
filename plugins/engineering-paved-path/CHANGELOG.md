@@ -17,6 +17,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: Se
   unrelated change. `references/upgrading-from-0.3.md` now opens by saying it
   describes an upgrade rather than asking for one, and that a project staying
   on 0.3.x should read it as a description of its current behaviour.
+- **`nestjs-best-practices` is written against Nest's seams, not against a
+  package set.** Only `@nestjs/common`, `@nestjs/core`, a platform adapter and
+  `reflect-metadata` are always present; `class-validator`,
+  `class-transformer`, `@nestjs/config`, `@nestjs/typeorm`, `@nestjs/throttler`
+  and `@nestjs/cache-manager` are separate packages a project may not have, and
+  the skill no longer assumes any of them. `SKILL.md` opens with a table
+  separating the two, `validation.md` presents the pipe seam first with
+  `class-validator` and a ten-line schema-library pipe as equal instantiations,
+  and the configuration, rate-limiting, persistence and testing rules each say
+  what holds without their package. Test examples are runner-agnostic —
+  nothing depends on Jest specifically.
 - `docs/PLUGIN-GUIDELINES.md` gains **"Respect the host's infrastructure and
   dependencies"** as a stated rule, plus two editorial-checklist items: no
   install command presented as a precondition for guidance, and
