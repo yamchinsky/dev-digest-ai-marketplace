@@ -42,7 +42,7 @@ Dependencies unchanged (`^1.0.0`).
 
 ### Added
 
-- Initial release, extracted from the DevDigest engineering harness:
+- Initial release:
   - agents `spec-creator`, `implementation-planner`, `implementer`,
     `plan-verifier` (+ their reference files: spec template, EARS guide,
     verification worked example);

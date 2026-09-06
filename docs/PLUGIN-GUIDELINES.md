@@ -109,11 +109,22 @@ adapted from a working repository, generalize it — mine the finding, then stri
 the module names, table and column names, paths and local conventions until
 what remains is a statement about the technology that holds for any project.
 
-1. `grep -riE '<origin-repo-name>' plugins/<name>/` → nothing outside
-   CHANGELOG and version-history lines, which are records of what a past
-   release was and are not rewritten. A plugin must never be shaped by, depend
-   on, or be justified by a particular consuming repository; "repository X
-   needs it this way" is an argument that belongs in X.
+1. `grep -riE '<origin-repo-name>' plugins/<name>/` → **zero hits**, including
+   in CHANGELOG and version-history lines. A plugin must never be shaped by,
+   depend on, or be justified by a particular repository; "repository X needs
+   it this way" is an argument that belongs in X. Attribution is not an
+   exception: naming the repository a component came from tells a consumer
+   nothing they can act on, and it is the thread by which repository-specific
+   assumptions creep back in.
+
+   Removing attribution never means rewriting what a release *did*. Drop the
+   origin clause and leave every factual claim about the release intact
+   ("Initial release, extracted from the X harness: agents …" → "Initial
+   release: agents …").
+
+   Citing an external source — documentation, a specification, a public
+   reference implementation — is a different thing and is required, not
+   discouraged. Record those URLs verbatim in the component's `README.md`.
 2. `grep -rF '.claude/' plugins/<name>/` → 0 hits; use path variables.
 3. `grep -rF 'mcp__' plugins/<name>/` → no required MCP tools in `tools:`
    frontmatter; body may mention optional tools with a fallback.

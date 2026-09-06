@@ -72,7 +72,7 @@ reproduce or disprove them rather than take them on trust.
 
 ### Added
 
-- Initial release: 12 knowledge skills extracted from the DevDigest harness —
+- Initial release: 12 knowledge skills —
   react-best-practices, react-testing-library, next-best-practices,
   frontend-architecture, fastify-best-practices, onion-architecture,
   drizzle-orm-patterns, postgresql-table-design, zod, typescript-expert,
