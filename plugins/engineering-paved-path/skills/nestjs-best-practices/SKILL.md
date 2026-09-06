@@ -24,6 +24,9 @@ Only `@nestjs/common`, `@nestjs/core`, a platform adapter and `reflect-metadata`
 | Rate limiting | the guard seam | `@nestjs/throttler` |
 | Caching | nothing | `@nestjs/cache-manager` |
 | Tests | nothing | `@nestjs/testing` plus the project's runner (Jest, Vitest, node:test) |
+| HTTP platform | the adapter seam | `@nestjs/platform-express` (the default) or `@nestjs/platform-fastify` |
+
+**One caveat this table cannot hide:** where a rule touches the raw request or response object — the passthrough-response and streaming sections of [rules/controllers.md](rules/controllers.md), and route-path syntax — the behaviour is the *adapter's*, not Nest's. Those passages assume `@nestjs/platform-express`. On the Fastify adapter the seams are identical but the objects underneath are not; verify against Fastify's API before applying them.
 
 **Write against the seam, not the package.** Where a rule below shows a specific library, it is one instantiation — the surrounding principle holds whatever the project uses, and introducing a package the project does not have is a dependency decision for its owners, never a step in following this skill.
 
