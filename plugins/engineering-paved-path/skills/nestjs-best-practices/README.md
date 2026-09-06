@@ -107,17 +107,21 @@ All sources used to derive these rules, verified **2026-09-06**. URLs verbatim.
 - npm registry metadata for `@nestjs/core`, `@nestjs/common`, `@nestjs/config`, `@nestjs/typeorm`, `@nestjs/testing`, `@nestjs/swagger`, `@nestjs/platform-express`, `@nestjs/cache-manager`, `@nestjs/throttler`, `typescript`, `reflect-metadata` — versions, release dates, `engines` and peer ranges.
 - [typestack/class-validator releases](https://github.com/typestack/class-validator/releases) and [typestack/class-transformer releases](https://github.com/typestack/class-transformer/releases) — release cadence.
 
-### Field evidence
+### Behaviours with no upstream documentation
 
 Several traps in `rules/dependency-injection.md`, `rules/testing.md`,
-`rules/configuration.md` and `rules/controllers.md` are generalised from
-production incidents in a NestJS + TypeORM + PostgreSQL codebase — the
-`import type` DI failure and its lint-autofix vector, the disable-comment
-displacement, the bootstrap/testing-harness hardening gap, the per-boot
-rate-limit budget, the cross-suite environment leak, the passthrough-response
-status conflict, and the fail-closed-factory deploy coupling. They are
-recorded here because they are **not** documented by NestJS, not because a
-particular repository has them.
+`rules/configuration.md` and `rules/controllers.md` have **no page on
+`docs.nestjs.com`** — the `import type` DI failure and its lint-autofix vector,
+the disable-comment displacement, the bootstrap/testing-harness hardening gap,
+the per-boot rate-limit budget, the cross-suite environment leak, the
+passthrough-response status conflict, and the fail-closed-factory deploy
+coupling.
+
+They are stated as observed framework behaviour, and each is written so a
+reader can reproduce it: the mechanism is explained, and the check that
+demonstrates it is named. Where an adjacent primary source exists — the
+TypeScript and typescript-eslint references above for the metadata erasure —
+it is cited. Do not go looking for a NestJS doc page confirming the rest.
 
 ### Conflicting opinions / open questions
 

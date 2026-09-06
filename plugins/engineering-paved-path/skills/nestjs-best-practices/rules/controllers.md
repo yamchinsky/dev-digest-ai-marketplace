@@ -86,7 +86,7 @@ async media(
 }
 ```
 
-Two rules that fall out of this and cost real production incidents:
+Two rules that fall out of this, both of which fail only in production:
 
 - **Never rely on the framework auto-downgrading a response to `304`.** Express's own freshness check will do it locally and can be bypassed by an edge proxy in front of your app, producing a `200` with a zero-byte body — an "empty image" for every revalidating client. Set the status explicitly so the wire contract is identical in every environment.
 - **Resolve the access decision before the caching short-circuit.** An `ETag` may skip bytes; it must never skip an authorisation check.

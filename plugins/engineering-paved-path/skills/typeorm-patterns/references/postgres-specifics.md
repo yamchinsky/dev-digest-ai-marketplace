@@ -46,11 +46,11 @@ If the value set changes often, a lookup table or `text` + `CHECK` costs less ov
 ### Casting in `CASE`
 
 ```sql
--- ❌ "column is of type completion_status but expression is of type text"
-UPDATE plans SET status = CASE WHEN x THEN $1 ELSE $2 END
+-- ❌ "column is of type task_status but expression is of type text"
+UPDATE tasks SET status = CASE WHEN x THEN $1 ELSE $2 END
 
 -- ✅
-UPDATE plans SET status = CASE WHEN x THEN $1::completion_status ELSE $2::completion_status END
+UPDATE tasks SET status = CASE WHEN x THEN $1::task_status ELSE $2::task_status END
 ```
 
 A bare `col = $1` infers the column's type; a `CASE` takes its type from its branches, and an untyped placeholder defaults to `text`.

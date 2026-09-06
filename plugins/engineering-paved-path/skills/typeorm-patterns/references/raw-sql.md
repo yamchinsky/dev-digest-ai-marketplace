@@ -17,7 +17,7 @@ The syntax differs per driver (`?` for MySQL/SQLite, `:1` for Oracle, `@0` for M
 
 ## The result shape depends on the statement kind
 
-This is the single most expensive undocumented behaviour in TypeORM. Observed on **TypeORM 1.x with the `pg` driver**, verified by database-backed tests after it caused three separate production bugs:
+This is the single most expensive undocumented behaviour in TypeORM. Observed on **TypeORM 1.x with the `pg` driver**:
 
 | Statement | Returns |
 |---|---|
@@ -70,7 +70,7 @@ async claim(key: string, manager?: EntityManager) {
 }
 ```
 
-> **Undocumented.** TypeORM's docs specify the parameter syntax but not the return shape, and community reports also describe raw `UPDATE`/`DELETE` **without** `RETURNING` coming back as an empty array on PostgreSQL rather than an affected-row count. Treat the table above as "true in a real project on TypeORM 1.x + pg 8" and verify against your own version in a database-backed test before relying on it. There is no doc page to appeal to.
+> **Undocumented.** TypeORM's docs specify the parameter syntax but not the return shape, and community reports also describe raw `UPDATE`/`DELETE` **without** `RETURNING` coming back as an empty array on PostgreSQL rather than an affected-row count. Treat the table above as observed behaviour on TypeORM 1.x + pg 8, and verify it against your own version in a database-backed test before relying on it. There is no doc page to appeal to.
 
 ## What raw SQL bypasses
 
@@ -105,24 +105,24 @@ A zero-row result *is* the rejection. The alternative — read the balance, deci
 ### Idempotency as a unique constraint
 
 ```sql
-INSERT INTO daily_push_log (user_id, local_date)
+INSERT INTO job_claims (owner_id, run_date)
 VALUES ($1, $2)
-ON CONFLICT (user_id, local_date) DO NOTHING
+ON CONFLICT (owner_id, run_date) DO NOTHING
 RETURNING id
 ```
 
 Zero rows means "already claimed". This survives restarts, concurrent schedulers and duplicate deliveries in a way no in-memory guard does — and it is the only form that works across replicas.
 
-Note the deliberate trade in claim-before-act: the day is claimed *before* the side effect runs, so a total downstream outage does not retry. Claiming after the side effect trades that for double-sends. Pick knowingly and write down which you picked.
+Note the deliberate trade in claim-before-act: the slot is claimed *before* the side effect runs, so a total downstream outage does not retry it. Claiming after the side effect trades that for double-sends. Pick knowingly and write down which you picked.
 
 ### Casting enum branches
 
 ```sql
--- ❌ "column is of type completion_status but expression is of type text"
-UPDATE plans SET status = CASE WHEN x THEN $1 ELSE $2 END
+-- ❌ "column is of type task_status but expression is of type text"
+UPDATE tasks SET status = CASE WHEN x THEN $1 ELSE $2 END
 
 -- ✅ every branch cast
-UPDATE plans SET status = CASE WHEN x THEN $1::completion_status ELSE $2::completion_status END
+UPDATE tasks SET status = CASE WHEN x THEN $1::task_status ELSE $2::task_status END
 ```
 
 A bare `col = $1` infers the column's type; a `CASE` takes its type from its branches, and an untyped placeholder defaults to `text`. Only a database-backed test catches this — a mocked repository passes happily.

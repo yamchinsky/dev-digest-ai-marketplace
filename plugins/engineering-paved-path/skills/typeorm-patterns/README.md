@@ -66,8 +66,8 @@ say*, and `nestjs-best-practices` answers *how it reaches a service*.
   moving; `SKILL.md` carries a dated table.
 - **Keep the "undocumented" labels honest.** Two claims in this skill —
   `query()` result shapes and the query-builder soft-delete root behaviour —
-  rest on field evidence rather than documentation. If TypeORM documents them,
-  cite the page; if a version changes them, change the page.
+  have no upstream documentation to cite. If TypeORM documents them, cite the
+  page; if a version changes them, change the page.
 - If a consuming repository documents its own rules (hand-written migrations
   only, a particular transaction wrapper), that repository wins there.
 
@@ -111,13 +111,13 @@ Verified **2026-09-06**. URLs verbatim.
 - [nestjs/typeorm — raw package.json](https://raw.githubusercontent.com/nestjs/typeorm/master/package.json) — current version and peer ranges.
 - [nestjs/typeorm v11.0.1](https://github.com/nestjs/typeorm/releases/tag/11.0.1) — the release that stopped registering the removed `Connection` class.
 
-### Field evidence (not documented upstream)
+### Behaviours with no upstream documentation
 
 Several behaviours in `references/raw-sql.md`, `references/soft-deletes.md`,
-`references/migrations.md` and `references/postgres-specifics.md` are
-generalised from a production NestJS + TypeORM 1.x + PostgreSQL codebase and
-were established by database-backed tests, because no documentation states
-them:
+`references/migrations.md` and `references/postgres-specifics.md` are **not
+stated by any documentation**. They are observable on TypeORM 1.x with the `pg`
+driver, and each is written so a reader can confirm it with a database-backed
+test rather than take it on trust:
 
 - `dataSource.query()` returning `[rows, affectedCount]` for `UPDATE`/`DELETE … RETURNING` but a plain rows array for `INSERT … RETURNING`, including `ON CONFLICT` — and `EntityManager.query()` delegating verbatim.
 - `createQueryBuilder` not applying the soft-delete predicate to the **root** entity while applying it to joined relations.
