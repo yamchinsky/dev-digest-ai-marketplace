@@ -43,8 +43,8 @@ deprecation window: a skill that answers with the wrong framework cannot be
   on TypeORM 1.1.1 (2026-09-01) with a full 0.3 → 1.x upgrade reference.
 
 Both skills record every source URL in their `README.md`, and label the handful
-of behaviours that are established by field evidence rather than by
-documentation.
+of behaviours that have no upstream documentation to cite, so a reader can
+reproduce or disprove them rather than take them on trust.
 
 ### Changed
 
