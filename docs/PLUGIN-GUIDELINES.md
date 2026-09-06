@@ -94,6 +94,46 @@ Extracted components must not assume any repository layout:
   documented fallback (e.g. typecheck-only) — never fail silently, never
   invent commands.
 
+## Respect the host's infrastructure and dependencies
+
+A plugin is a guest. It works with the stack, versions, package manager and
+tooling the host project already has — it does not install, upgrade, or
+require anything to make its own guidance apply.
+
+- **Never install, add, or upgrade a host dependency.** Not as a step, not as
+  a precondition, not "while we're here". That includes lockfiles, root
+  `package.json`, tool versions, and the package manager. Agents that write
+  code must list these among their forbidden paths.
+- **Never make a version bump the price of following a skill.** If guidance
+  only holds on a newer major, say so and state what the older major does
+  instead — a reader on the older line must be able to act correctly without
+  upgrading first. Version-dependent claims carry a *since vN* marker in both
+  directions; what is stable across majors is stated as such.
+- **A dependency change is a proposal, not an instruction.** When a finding
+  genuinely implies one (an unmaintained package, a broken toolchain
+  pairing), surface it as a decision for the project's owners, with the
+  options and their costs. Never phrase it as a step, and never fold it into
+  an unrelated change.
+- **Whatever the project already uses is what to write.** Do not introduce a
+  second library for a job the host already solved because the skill prefers
+  a different one.
+- **Write against the seam, not the package.** Where a framework provides an
+  extension point and the ecosystem provides packages that fill it, the
+  durable guidance is the seam — the rule holds whichever package the host
+  picked, or none. State up front which parts of the stack are always present
+  and which are separate packages a project may not have, then show a
+  specific library as *one instantiation*, clearly labelled. A skill whose
+  advice evaporates when the host swapped one library for another was written
+  against the wrong thing.
+- **Read the project's reality before advising.** Package manager and
+  workspace topology come from its lockfiles; framework and ORM majors from
+  its manifest — never from this marketplace's baseline tables, which record
+  what was current when the skill was written.
+
+The test: if following a skill's advice requires `npm install`, a version
+bump, or a tooling swap before the advice works, the skill is imposing its
+own infrastructure and needs rewriting.
+
 ## Hooks policy (v1)
 
 Plugins in this marketplace ship **no lifecycle hooks**. Gates that were
@@ -130,8 +170,15 @@ what remains is a statement about the technology that holds for any project.
    frontmatter; body may mention optional tools with a fallback.
 4. All cross-references namespaced (own components included).
 5. `tools:` lines audited: minimal set, no Write/Edit for read-only agents.
-6. Inputs stated; missing-input behavior stated.
-7. Output paths documented in-file and in the plugin README.
-8. No secrets, no absolute paths, no personal URLs. Prose in English;
+6. `grep -rniE 'npm i(nstall)?|pnpm add|yarn add|bun add' plugins/<name>/` →
+   no install command presented as a step the reader is expected to run to
+   make the guidance apply. Setup snippets for a *new* project are fine when
+   labelled as such; a precondition attached to existing-code guidance is
+   not. See "Respect the host's infrastructure and dependencies".
+7. Version-dependent claims carry a *since vN* marker, and state the older
+   behavior wherever getting it backwards would break working code.
+8. Inputs stated; missing-input behavior stated.
+9. Output paths documented in-file and in the plugin README.
+10. No secrets, no absolute paths, no personal URLs. Prose in English;
    functional trigger phrases in other languages may stay; replace "respond in
    <language>" with "respond in the user's language".

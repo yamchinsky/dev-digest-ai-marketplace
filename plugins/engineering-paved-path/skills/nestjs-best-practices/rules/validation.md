@@ -7,7 +7,32 @@ metadata:
 
 # Validation at the edge
 
-Untrusted input is validated **once**, at the HTTP boundary, by a DTO class plus a global `ValidationPipe`. Downstream code receives a typed object and does not re-check it.
+Untrusted input is validated **once**, at the HTTP boundary, by a globally registered pipe. Downstream code receives a typed object and does not re-check it.
+
+That rule is the durable part. **Which validation library implements it is the project's choice**, and Nest ships none of them in core — pick up whatever is already in the manifest:
+
+| The project uses | The pipe |
+|---|---|
+| `class-validator` + `class-transformer` | the built-in `ValidationPipe` (the rest of this file) |
+| Zod, Valibot, ArkType, Yup… | a ten-line custom pipe (below) |
+| nothing yet | a decision for its owners, not a step in following this page |
+
+```ts
+// A schema-library pipe — the whole implementation.
+@Injectable()
+export class SchemaValidationPipe<T> implements PipeTransform {
+  constructor(private readonly schema: { safeParse: (v: unknown) => { success: boolean; data?: T; error?: unknown } }) {}
+  transform(value: unknown): T {
+    const result = this.schema.safeParse(value);
+    if (!result.success) throw new BadRequestException(result.error);
+    return result.data as T;
+  }
+}
+```
+
+Everything else on this page — validate at the edge and nowhere else, never parse by hand in a handler, validate route params too, don't re-validate in the service — applies identically to both.
+
+## With `class-validator`: register once, globally
 
 ```ts
 // main.ts
@@ -20,7 +45,7 @@ app.useGlobalPipes(
 );
 ```
 
-The documented framing for the global registration is *"binding `ValidationPipe` at the application level, thus ensuring all endpoints are protected from receiving incorrect data"* ([validation](https://docs.nestjs.com/techniques/validation)).
+The documented framing is *"binding `ValidationPipe` at the application level, thus ensuring all endpoints are protected from receiving incorrect data"* ([validation](https://docs.nestjs.com/techniques/validation)).
 
 ## DTOs are classes, not interfaces
 
@@ -116,4 +141,6 @@ Two failure modes worth knowing:
 
 `class-validator` is the default because the DTO class doubles as the transformation target. Zod (or another Standard Schema library) is a legitimate alternative for request bodies, especially where the schema is shared with a client package — implement a small pipe that runs `safeParse` and throws a `BadRequestException` with the flattened issues. For Zod mechanics see `engineering-paved-path:zod`.
 
-Note the version reality: `class-validator`'s last release is 0.15.1 (2026-02), and `class-transformer` has had **no tagged release since 0.5.1 in 2021**. They work, and Nest's docs still build on them, but do not expect fixes. That is a real argument for schema-library validation on new code.
+Note the version reality: `class-validator`'s last release is 0.15.1 (2026-02), and `class-transformer` has had **no tagged release since 0.5.1 in 2021**. They work, and Nest's docs still build on them, but do not expect fixes.
+
+**Whichever the project already uses is the one to write.** Introducing a second validation library into a codebase is a dependency decision with its own review — not something to do because a skill mentioned it. The paragraph above is context for that decision if someone chooses to have it, not a recommendation to switch.

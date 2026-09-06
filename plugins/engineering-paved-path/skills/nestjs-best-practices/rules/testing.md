@@ -7,6 +7,8 @@ metadata:
 
 # Testing
 
+`@nestjs/testing` supplies the module builder; the **runner is the project's** — Jest, Vitest and `node:test` all work, and nothing on this page depends on which. Examples use Jest-shaped names because they are the most recognisable; substitute your runner's equivalents.
+
 ## Three lanes, and what each one can prove
 
 | Lane | Shape | Proves |
@@ -66,7 +68,7 @@ Adding a constructor parameter, or a required column to a widely-fixtured entity
 
 - Before calling a constructor change safe, grep the **whole package** for `new <ServiceName>(`.
 - Before adding a required field to a common entity, grep for the fixture factories that build it.
-- **`ts-jest` does not structurally check object literals**, so Jest can stay green while `tsc --noEmit` fails. A task that runs only its own tests will report success. Run the typecheck.
+- **A transpile-only TypeScript transform does not structurally check object literals** — `ts-jest` and Vitest's esbuild transform both behave this way — so the test run stays green while `tsc --noEmit` fails. A task that runs only its own tests reports success. Run the typecheck separately.
 - Where the new collaborator is optional at construction, use a trailing TypeScript-optional parameter *without* `@Optional()` — Nest still injects and still fails loudly at boot, while positional call sites keep compiling ([dependency-injection.md](dependency-injection.md)).
 
 The same blast radius applies to signed-token claim shapes: adding a required claim breaks every spec that hand-signs a token, and no constructor grep finds those. Grep for the signing call too.
@@ -90,7 +92,8 @@ End-to-end lanes typically run in band — every spec file boots its own applica
 Where the ORM caches one repository instance per entity, spying on that instance intercepts the production code path — a cheap N+1 regression test with no custom logger:
 
 ```ts
-const spy = jest.spyOn(dataSource.getRepository(Item), 'find');
+// Whatever your runner calls it: jest.spyOn / vi.spyOn / mock.method.
+const spy = spyOn(dataSource.getRepository(Item), 'find');
 ```
 
 Assert **flatness** — the same count as the fixture size doubles — never a hardcoded literal. The spy intercepts every `find()` on that repository, so two unrelated queries sharing an entity both count, and the meaningful criterion is "does not scale with N", not "is exactly 1".

@@ -94,7 +94,9 @@ In a Nest application the more common shape is a plain `@Injectable()` class hol
 `EntityManager` caches one repository instance per entity target, so spying on `dataSource.getRepository(Entity)` intercepts the production code path — a cheap N+1 regression test with no query logger:
 
 ```ts
-const spy = jest.spyOn(dataSource.getRepository(Item), 'find');
+// `jest.spyOn` here; `vi.spyOn` on Vitest, `mock.method` on node:test —
+// the technique is the cached repository instance, not the runner.
+const spy = spyOn(dataSource.getRepository(Item), 'find');
 ```
 
 Assert **flatness** (the count does not grow as the fixture doubles), never a hardcoded number: the spy catches every `find()` on that repository, so two unrelated queries on the same entity both count.

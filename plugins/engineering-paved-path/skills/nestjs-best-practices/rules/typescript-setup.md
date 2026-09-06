@@ -76,11 +76,13 @@ It is safe to enable; what is unsafe is letting a lint autofix decide which impo
 
 TypeScript 7.0 (released 2026-07-08) is a native rewrite that **does not expose the programmatic Compiler API**. `nest build` and `nest start` use that API, so with `typescript@7` installed they fail — for both the default `tsc` builder and the SWC builder. The tracking issue is open ([nest-cli#3479](https://github.com/nestjs/nest-cli/issues/3479)); the shipped mitigation so far is only a clearer error message telling you to install TypeScript 6.
 
-Until it closes: pin the build toolchain to TypeScript 6.x. If you want TS 7 speed for checking, run it as a separate `typecheck` script rather than as the compiler `nest` invokes. Re-check the issue before writing this into a project — it is the single most likely fact on this page to have changed.
+**This is a diagnosis, not an instruction.** If a project's `nest build` fails on the Compiler API, this is why. Which TypeScript that project pins is the project's decision, and changing a pinned dependency is not something to do on the way to something else — surface the finding and let the humans decide. The options, for that conversation: stay on TypeScript 6.x (NestJS's own `typescript-starter` does), or keep 7 and run it as a separate `typecheck` script rather than as the compiler `nest` invokes.
 
-## Recommended additional strictness
+Re-check the issue before relying on any of this — it is the single most likely fact on this page to have changed.
 
-Not required by Nest, but they turn whole categories of the traps in these rules into compile errors:
+## Additional strictness, if the project wants it
+
+Not required by Nest, and not something to switch on inside an unrelated change — flipping a strictness flag surfaces errors across the whole codebase, which is its own piece of work. Offered because these turn whole categories of the traps in these rules into compile errors:
 
 ```jsonc
 {

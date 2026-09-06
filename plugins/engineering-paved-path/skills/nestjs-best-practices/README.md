@@ -22,7 +22,7 @@ This skill answers two questions for a NestJS codebase:
 - Module shape, the single composition root, dynamic modules, `@Global()`
 - Providers, injection tokens, injection scopes, the `import type` DI trap, `forwardRef`
 - Thin controllers, parameter decorators, `@Res({ passthrough: true })`, streaming
-- `class-validator` DTOs and `ValidationPipe` semantics
+- Validation at the edge: the pipe seam, `ValidationPipe` semantics, and the schema-library alternative
 - Guards / interceptors / pipes / filters, their execution order, global registration, `Reflector`
 - Exception hierarchy, domain errors, exception filters, error envelopes
 - `ConfigModule`, schema validation, typed access, fail-closed factories

@@ -1,6 +1,6 @@
 ---
 name: nestjs-best-practices
-description: "NestJS application patterns for TypeScript backends — modules and providers, dependency injection and injection tokens, the composition root, thin controllers, guards/interceptors/pipes/filters and their execution order, class-validator DTO validation at the edge, ConfigModule and typed configuration, lifecycle hooks, exception filters, and testing with Test.createTestingModule. Use when building, wiring, reviewing or debugging a NestJS application: adding a module or a provider, resolving 'Nest can't resolve dependencies of X', choosing an injection scope, registering a global guard, shaping an error response, writing a testing module, or upgrading a NestJS major. Trigger terms: NestJS, Nest, @nestjs/common, @nestjs/core, app.module.ts, @Module, @Injectable, @Controller, provider, injection token, forwardRef, ValidationPipe, exception filter, APP_GUARD, Test.createTestingModule, nest build, nest start. NestJS runtime and wiring ONLY — NOT which layer a file belongs to (use engineering-paved-path:onion-architecture), NOT TypeORM query, migration or entity mechanics (use engineering-paved-path:typeorm-patterns), NOT PostgreSQL schema design (use engineering-paved-path:postgresql-table-design), NOT Zod schema mechanics (use engineering-paved-path:zod)."
+description: "NestJS application patterns for TypeScript backends — modules and providers, dependency injection and injection tokens, the composition root, thin controllers, guards/interceptors/pipes/filters and their execution order, validation at the edge, ConfigModule and typed configuration, lifecycle hooks, exception filters, and testing with Test.createTestingModule. Use when building, wiring, reviewing or debugging a NestJS application: adding a module or a provider, resolving 'Nest can't resolve dependencies of X', choosing an injection scope, registering a global guard, shaping an error response, writing a testing module, or upgrading a NestJS major. Trigger terms: NestJS, Nest, @nestjs/common, @nestjs/core, app.module.ts, @Module, @Injectable, @Controller, provider, injection token, forwardRef, ValidationPipe, exception filter, APP_GUARD, Test.createTestingModule, nest build, nest start. NestJS runtime and wiring ONLY — NOT which layer a file belongs to (use engineering-paved-path:onion-architecture), NOT TypeORM query, migration or entity mechanics (use engineering-paved-path:typeorm-patterns), NOT PostgreSQL schema design (use engineering-paved-path:postgresql-table-design), NOT Zod schema mechanics (use engineering-paved-path:zod)."
 version: 1.0.0
 ---
 
@@ -11,6 +11,21 @@ How a NestJS application is wired, what breaks it, and why. **Runtime and wiring
 ## Inputs
 
 This skill assumes nothing about your repository beyond what you tell it. When applying it, first locate (or ask for): the application root, the composition root (the module `NestFactory.create()` is given), the feature-module directory, the bootstrap file, and the test commands and their filename conventions. If the project documents its own conventions — an `AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`, or a repository skill — **those take precedence over anything here.**
+
+### What is Nest, and what is a package you may not have
+
+Only `@nestjs/common`, `@nestjs/core`, a platform adapter and `reflect-metadata` are always present. Everything else below is a **separate package a project either has or does not**, and this skill never assumes it:
+
+| Concern | Always available | Common packages — use whichever the project already has |
+|---|---|---|
+| Validation at the edge | the pipe seam (`useGlobalPipes`, `@UsePipes`) | `class-validator` + `class-transformer` with `ValidationPipe`; or a schema library behind a small custom pipe |
+| Configuration | providers, factories, `process.env` | `@nestjs/config` |
+| Persistence | nothing | `@nestjs/typeorm`, `@nestjs/mongoose`, a hand-written provider |
+| Rate limiting | the guard seam | `@nestjs/throttler` |
+| Caching | nothing | `@nestjs/cache-manager` |
+| Tests | nothing | `@nestjs/testing` plus the project's runner (Jest, Vitest, node:test) |
+
+**Write against the seam, not the package.** Where a rule below shows a specific library, it is one instantiation — the surrounding principle holds whatever the project uses, and introducing a package the project does not have is a dependency decision for its owners, never a step in following this skill.
 
 ## Version baseline (verified 2026-09-06)
 
