@@ -3,6 +3,19 @@
 All notable changes to `engineering-paved-path` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [2.1.1] - 2026-09-06
+
+### Fixed
+
+- **The platform adapter is now stated as an assumption.** The
+  passthrough-response, streaming and route-path passages in
+  `nestjs-best-practices/rules/controllers.md` describe behaviour that belongs
+  to `@nestjs/platform-express`, not to Nest — on `@nestjs/platform-fastify`
+  the seam is the same but the objects underneath are not. Each passage now
+  says so, and the adapter appears in `SKILL.md`'s always-present-vs-separate
+  table. Found by auditing the skill against the same "write against the seam"
+  rule added in 2.1.0, rather than by anyone hitting it.
+
 ## [2.1.0] - 2026-09-06
 
 ### Changed

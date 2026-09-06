@@ -54,6 +54,8 @@ Nest resolves the status code from the decorator statically: `200` for everythin
 
 ## `@Res({ passthrough: true })` — the trap
 
+> **Assumes `@nestjs/platform-express`.** Everything from here to the end of the streaming section touches the raw response object, so the behaviour belongs to the adapter rather than to Nest. On `@nestjs/platform-fastify` the seam is the same and the object is not — `res.set` becomes `reply.header`, and the freshness/`send()` semantics differ. Check the adapter in the manifest first.
+
 Reaching for the raw response object to set a header is legitimate. Reaching for it to set a *status* is not:
 
 ```ts
@@ -102,9 +104,9 @@ Return `StreamableFile` rather than piping into the response yourself — it kee
 - `@Query()` with a DTO class, not a bag of `@Query('a') @Query('b')`. Query values arrive as strings; a DTO plus a transforming `ValidationPipe` is what converts them.
 - Build one `@CurrentUser()` custom decorator over `ExecutionContext` instead of `@Req() req` plus a `req.user` cast in twenty controllers.
 
-## Route paths — check your adapter major first
+## Route paths — check your adapter and its major first
 
-**This section is version-dependent, and getting it backwards breaks routing.**
+**This section is version-dependent, and getting it backwards breaks routing.** It describes the Express adapter; `@nestjs/platform-fastify` uses Fastify's own path syntax and neither line below applies to it.
 
 - **NestJS 11+ (Express 5)** — the stricter path parser **rejects bare wildcards**: `'*'` and `'/*'` throw `Missing parameter name`. Named wildcards are required: `'/*splat'`.
 - **NestJS 10 and earlier (Express 4)** — bare `'*'` is correct and `'/*splat'` is **not** understood. Do not "modernise" a working v10 route to the v11 syntax.
