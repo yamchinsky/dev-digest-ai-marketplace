@@ -60,12 +60,18 @@ await repo.find({
 });
 ```
 
-- **String-array `select` / `relations` were removed in 1.0.** Object syntax only.
-- **`join` in find options was removed** — use `relations`.
-- **`findOneById` and `findByIds` are gone** → `findOneBy({ id })` and `findBy({ id: In([...]) })`.
-- **`exist()` was renamed `exists()`**.
+The next four are **1.0 removals** — on 0.3.x the old forms still work, but
+the replacements work on both, so prefer them either way:
+
+- **String-array `select` / `relations`** → object syntax only.
+- **`join` in find options** → `relations`.
+- **`findOneById`, `findByIds`** → `findOneBy({ id })`, `findBy({ id: In([...]) })`.
+- **`exist()`** → renamed `exists()`. (This one has no both-lines form: pick by major.)
+
+Version-independent:
+
 - `where` as an array is `OR`; nested objects filter on relations.
-- `null` or `undefined` in a `where` now **throws** by default — use `IsNull()` ([data-source.md](data-source.md)).
+- `null` or `undefined` in a `where` **throws by default on 1.x** and is **silently ignored on 0.3.x** — write `IsNull()` on both, since the 0.3.x behaviour turns a caller bug into a query that matches everything ([data-source.md](data-source.md)).
 
 ## Repository vs `EntityManager`
 

@@ -102,9 +102,14 @@ Return `StreamableFile` rather than piping into the response yourself — it kee
 - `@Query()` with a DTO class, not a bag of `@Query('a') @Query('b')`. Query values arrive as strings; a DTO plus a transforming `ValidationPipe` is what converts them.
 - Build one `@CurrentUser()` custom decorator over `ExecutionContext` instead of `@Req() req` plus a `req.user` cast in twenty controllers.
 
-## Route paths and the Express 5 change
+## Route paths — check your adapter major first
 
-Since NestJS 11, the default adapter is Express 5, whose stricter path parser **rejects bare wildcards**: `'*'` and `'/*'` now throw `Missing parameter name`. Named wildcards are required — `'/*splat'`. This bites catch-all routes, static-file fallbacks and legacy `@All('*')` handlers on upgrade. See [versions-and-upgrades.md](versions-and-upgrades.md).
+**This section is version-dependent, and getting it backwards breaks routing.**
+
+- **NestJS 11+ (Express 5)** — the stricter path parser **rejects bare wildcards**: `'*'` and `'/*'` throw `Missing parameter name`. Named wildcards are required: `'/*splat'`.
+- **NestJS 10 and earlier (Express 4)** — bare `'*'` is correct and `'/*splat'` is **not** understood. Do not "modernise" a working v10 route to the v11 syntax.
+
+Read `@nestjs/platform-express` from the lockfile before touching a catch-all route, a static-file fallback or an `@All(...)` handler. This is the most common upgrade break between the two majors, in both directions. See [versions-and-upgrades.md](versions-and-upgrades.md).
 
 ## Controller checklist
 

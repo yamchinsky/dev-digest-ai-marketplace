@@ -65,6 +65,12 @@ This skill answers two questions for a NestJS codebase:
   `rules/versions-and-upgrades.md` both carry a dated table; a stale table is
   worse than no table. The TypeScript 7 / `nest-cli` issue in particular is
   expected to change.
+- **Mark every version-dependent claim, in both directions.** Readers are
+  more often on an older major than on the newest one, so a fact stated
+  flatly reads as universal and misleads them. Say *since vN*, and say what
+  the older behaviour is where getting it backwards breaks code — the Express
+  4/5 route syntax is the canonical example. Equally, state what is stable
+  across majors, so the guards do not make the whole skill read as uncertain.
 - If a consuming repository documents conventions that diverge from this
   skill, that repository's own documents win there — this skill is the
   default, not an override.
