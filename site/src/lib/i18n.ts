@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 export type Lang = 'en' | 'uk';
 
 const en = {
-  'app.title': 'DevDigest AI Marketplace',
+  'app.title': 'Claude Code Plugin Marketplace',
   'app.tagline': 'Skills, agents, and workflows for Claude Code',
   'header.search': 'Search',
   'header.themeToggle': 'Toggle color theme',
@@ -15,7 +15,7 @@ const en = {
   'footer.source': 'Source on GitHub',
   'home.heroTitle': 'Find your next Claude Code plugin',
   'home.heroSubtitle':
-    'Search plugins, skills, and agents from the DevDigest team harness — then copy a single install command.',
+    'Search plugins, skills, and agents — then copy a single install command.',
   'home.searchPlaceholder': 'Search plugins, skills, agents…',
   'home.popularKeywords': 'Popular keywords',
   'home.counter.plugins': 'Plugins',
@@ -85,7 +85,7 @@ const en = {
 export type I18nKey = keyof typeof en;
 
 const uk: Record<I18nKey, string> = {
-  'app.title': 'DevDigest AI Marketplace',
+  'app.title': 'Claude Code Plugin Marketplace',
   'app.tagline': 'Скіли, агенти та воркфлоу для Claude Code',
   'header.search': 'Пошук',
   'header.themeToggle': 'Перемкнути тему',
@@ -97,7 +97,7 @@ const uk: Record<I18nKey, string> = {
   'footer.source': 'Код на GitHub',
   'home.heroTitle': 'Знайдіть свій наступний плагін для Claude Code',
   'home.heroSubtitle':
-    'Шукайте плагіни, скіли й агентів з командного харнесу DevDigest — і копіюйте одну команду встановлення.',
+    'Шукайте плагіни, скіли й агентів — і копіюйте одну команду встановлення.',
   'home.searchPlaceholder': 'Шукати плагіни, скіли, агентів…',
   'home.popularKeywords': 'Популярні ключові слова',
   'home.counter.plugins': 'Плагіни',

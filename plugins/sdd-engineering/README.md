@@ -86,9 +86,15 @@ false activation). See `evals/README.md`.
 
 Claude Code >= 2.1.196 — see [COMPATIBILITY.md](COMPATIBILITY.md).
 
-## Provenance
+## Portability
 
-Extracted from the DevDigest engineering harness. The `run-plan` skill was
-renamed from `impl`; repository-specific paths, module maps, hook couplings,
-and MCP tool requirements were removed in the editorial pass — see
-CHANGELOG 1.0.0.
+The workflow assumes nothing about your repository's layout. Agents state their
+inputs and ask when one is missing; output locations are documented (specs →
+`specs/`, plans → `docs/plans/`, retro ledger → `docs/retros/ledger.md`,
+insights → the nearest `INSIGHTS.md`); no lifecycle hooks are shipped, so a
+host repository's own hooks are neither assumed nor overridden; and MCP
+integrations are optional, with a documented fallback when the host does not
+expose them.
+
+Note for anyone following older material: the `run-plan` skill was named `impl`
+before 1.0.0.

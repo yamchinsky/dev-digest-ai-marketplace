@@ -102,12 +102,18 @@ explicit workflow steps. Host repositories keep their own hooks; a plugin must
 not assume or override them. Revisit only with a documented consumer scenario
 and a security review.
 
-## Extraction editorial checklist
+## Editorial checklist
 
-Run before every PR that adds or updates extracted content:
+Run before every PR that adds or updates plugin content. Where content is
+adapted from a working repository, generalize it — mine the finding, then strip
+the module names, table and column names, paths and local conventions until
+what remains is a statement about the technology that holds for any project.
 
-1. `grep -riE 'devdigest|dev-digest' plugins/<name>/` → only attribution lines
-   in README/CHANGELOG (origin credit is fine; behavior references are not).
+1. `grep -riE '<origin-repo-name>' plugins/<name>/` → nothing outside
+   CHANGELOG and version-history lines, which are records of what a past
+   release was and are not rewritten. A plugin must never be shaped by, depend
+   on, or be justified by a particular consuming repository; "repository X
+   needs it this way" is an argument that belongs in X.
 2. `grep -rF '.claude/' plugins/<name>/` → 0 hits; use path variables.
 3. `grep -rF 'mcp__' plugins/<name>/` → no required MCP tools in `tools:`
    frontmatter; body may mention optional tools with a fallback.

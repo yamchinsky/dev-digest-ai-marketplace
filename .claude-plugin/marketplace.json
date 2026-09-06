@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "dev-digest-ai-marketplace",
-  "description": "Team AI harness extracted from DevDigest: SDD workflow, shared engineering skills, research agent, and repository-agnostic architecture review.",
+  "description": "Spec-Driven Development workflow, shared engineering knowledge skills, a read-only research agent, and a repository-agnostic architecture-review gate for Claude Code.",
   "owner": {
     "name": "Pavlo Yamchinsky",
     "email": "pavloyamchinsky@gmail.com"

@@ -47,9 +47,17 @@ auditing the whole tree.
   nothing else from the dependency — narrowing to `^2` would force a major bump
   here for a change that does not affect this plugin's behavior.
 
-## Provenance
+## The reviewer ships no rules of its own
 
-Generalized from the DevDigest `architecture-reviewer` agent: the four
-hardcoded DevDigest contracts became the worked example in
-`references/example-rules.md`, and contract discovery moved to
-repository-local architecture docs.
+This is the property that makes the gate portable, and it is worth stating
+plainly: the agent carries **no built-in architecture contracts**. It discovers
+them from the host repository (`docs/architecture/rules/*.md` →
+`docs/architecture/*.md` → `ARCHITECTURE.md`) and enforces only what that
+repository documents, quoting the rule identifier and verbatim evidence in
+every finding. With no discoverable rules it returns NOT-APPLICABLE rather than
+inventing a standard.
+
+`references/example-rules.md` is a worked example of the format — four rules
+covering layering direction, DI discipline, pure-package zero-I/O, and a
+mandatory output gate — meant to be copied into your repository and adapted,
+not enforced from here.
