@@ -3,6 +3,23 @@
 All notable changes to `engineering-paved-path` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: SemVer.
 
+## [2.1.2] - 2026-09-06
+
+### Added
+
+- **Both new skills now state their scope boundary**, so a reader outside it
+  finds out from the skill rather than from a wrong answer.
+  - `typeorm-patterns` is **PostgreSQL via `pg`**. Raw-SQL result shapes, `$1`
+    parameters, enum semantics, `RETURNING`, `cardinality()`, index types,
+    `CREATE INDEX CONCURRENTLY` and `node-postgres` type parsing are all
+    driver-specific; on MySQL, SQLite, MSSQL or MongoDB they are unverified.
+    What does transfer is listed explicitly.
+  - `nestjs-best-practices` covers **the HTTP application**. Microservice
+    transports, GraphQL, WebSockets and queues have their own seams — most
+    sharply, `GqlExecutionContext` makes an HTTP-shaped guard or filter
+    silently wrong. The DI, module and testing rules apply everywhere; the
+    controller, pipe and filter rules assume an HTTP context.
+
 ## [2.1.1] - 2026-09-06
 
 ### Fixed
